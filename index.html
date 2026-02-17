@@ -10,7 +10,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
 
         :root {
-            /* --- THEME: "Electric Blue & Deep Slate" --- */
+            /* --- THEME: "Zen Productivity" --- */
             --bg-body: #F8FAFC;         
             --bg-surface: #FFFFFF;
             
@@ -19,16 +19,17 @@
             --text-tertiary: #94A3B8;   
             
             --brand: #2563EB;           
-            --brand-hover: #1D4ED8;
             --brand-surface: #EFF6FF;   
             
             --border: #E2E8F0;
-            --danger: #EF4444;
             
+            /* Status Colors */
+            --status-draft-bg: #F1F5F9; --status-draft-text: #64748B;
+            --status-ready-bg: #F0FDF4; --status-ready-text: #166534;
+            --status-posted-bg: #EFF6FF; --status-posted-text: #1E40AF;
+
             --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
-            --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.05);
-            --shadow-float: 0 20px 25px -5px rgba(15, 23, 42, 0.1);
+            --shadow-float: 0 10px 15px -3px rgba(15, 23, 42, 0.05);
             
             --ease: cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -63,6 +64,7 @@
 
         .header-right { display: flex; align-items: center; gap: 16px; }
 
+        /* Buttons & Icons */
         .ctx-btn {
             height: 36px; padding: 0 12px; border-radius: 8px;
             background: transparent; border: 1px solid transparent;
@@ -73,34 +75,6 @@
         .ctx-btn:hover { background: white; border-color: var(--border); color: var(--text-primary); }
         .ctx-btn.active { background: var(--brand-surface); color: var(--brand); border-color: rgba(37,99,235,0.2); font-weight: 600; }
 
-        .icon-svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; }
-        .icon-dots { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; fill: none; }
-
-        .dropdown {
-            position: absolute; top: calc(100% + 4px); right: 0;
-            background: var(--bg-surface); border: 1px solid var(--border);
-            border-radius: 12px; box-shadow: var(--shadow-lg);
-            min-width: 220px; padding: 6px; display: none; z-index: 200;
-            animation: slideDown 0.15s var(--ease); transform-origin: top right;
-        }
-        .dropdown.show { display: block; }
-        @keyframes slideDown { from { opacity: 0; transform: scale(0.98) translateY(-4px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-
-        .drop-item {
-            padding: 10px 12px; border-radius: 8px;
-            font-size: 13px; font-weight: 500; color: var(--text-primary);
-            cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-        }
-        .drop-item:hover { background: var(--bg-body); }
-        .drop-item.selected { color: var(--brand); background: var(--brand-surface); }
-        .drop-divider { height: 1px; background: var(--border); margin: 6px 0; }
-        .drop-danger { color: var(--danger); }
-        .drop-danger:hover { background: #FEF2F2; }
-
-        /* --- MAIN --- */
-        .main-wrapper { padding-top: 40px; padding-bottom: 60px; flex: 1; }
-        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
-
         .btn {
             height: 40px; padding: 0 20px; border-radius: 10px; font-size: 13px; font-weight: 600;
             display: inline-flex; align-items: center; gap: 8px;
@@ -109,46 +83,70 @@
         .btn-primary { background: var(--brand); color: white; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3); }
         .btn-primary:hover { background: #1D4ED8; transform: translateY(-1px); }
 
-        .switcher { background: white; border: 1px solid var(--border); padding: 3px; border-radius: 10px; display: flex; }
-        .switch-opt {
-            padding: 6px 16px; border-radius: 7px;
-            font-size: 12px; font-weight: 600; color: var(--text-secondary);
-            cursor: pointer; border: none; background: transparent; transition: all 0.2s;
+        .icon-svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; }
+        .icon-dots { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; fill: none; }
+
+        /* Dropdowns */
+        .dropdown {
+            position: absolute; top: calc(100% + 4px); right: 0;
+            background: var(--bg-surface); border: 1px solid var(--border);
+            border-radius: 12px; box-shadow: var(--shadow-float);
+            min-width: 220px; padding: 6px; display: none; z-index: 200;
+            animation: slideDown 0.15s var(--ease); transform-origin: top right;
         }
+        .dropdown.show { display: block; }
+        @keyframes slideDown { from { opacity: 0; transform: scale(0.98) translateY(-4px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .drop-item { padding: 10px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--text-primary); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .drop-item:hover { background: var(--bg-body); }
+        .drop-item.selected { color: var(--brand); background: var(--brand-surface); }
+        .drop-divider { height: 1px; background: var(--border); margin: 6px 0; }
+        .drop-danger { color: #EF4444; } .drop-danger:hover { background: #FEF2F2; }
+
+        /* --- MAIN --- */
+        .main-wrapper { padding-top: 40px; padding-bottom: 60px; flex: 1; }
+        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+
+        .switcher { background: white; border: 1px solid var(--border); padding: 3px; border-radius: 10px; display: flex; }
+        .switch-opt { padding: 6px 16px; border-radius: 7px; font-size: 12px; font-weight: 600; color: var(--text-secondary); cursor: pointer; border: none; background: transparent; transition: all 0.2s; }
         .switch-opt:hover { color: var(--text-primary); }
         .switch-opt.active { background: var(--bg-body); color: var(--text-primary); box-shadow: var(--shadow-sm); }
 
-        /* --- VIEWS --- */
+        /* --- TABLE --- */
         .view-container { display: none; animation: fadeIn 0.3s var(--ease); }
         .view-container.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Table */
         .table-frame { background: var(--bg-surface); border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); overflow: hidden; }
         table { width: 100%; border-collapse: collapse; }
-        th {
-            text-align: left; padding: 16px 24px;
-            font-size: 11px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em;
-            border-bottom: 1px solid var(--border); background: #FAFAFA;
-        }
-        td { padding: 20px 24px; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: top; color: var(--text-secondary); }
+        th { text-align: left; padding: 16px 24px; font-size: 11px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); background: #FAFAFA; }
+        td { padding: 18px 24px; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: middle; color: var(--text-secondary); }
         tr:last-child td { border-bottom: none; }
         tr:hover td { background: #F8FAFC; color: var(--text-primary); }
         
         .pill { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; background: var(--brand-surface); color: var(--brand); }
-        .alt-badge { display: inline-block; font-size: 10px; font-weight: 700; color: var(--text-tertiary); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; letter-spacing: 0.05em; margin-right: 6px; }
+        
+        /* Status Pill */
+        .status-pill { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; user-select: none; transition: all 0.2s; }
+        .status-draft { background: var(--status-draft-bg); color: var(--status-draft-text); }
+        .status-ready { background: var(--status-ready-bg); color: var(--status-ready-text); }
+        .status-posted { background: var(--status-posted-bg); color: var(--status-posted-text); }
+        
+        /* Action Buttons (Copy/Link) */
+        .action-icon { width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; color: var(--text-tertiary); cursor: pointer; transition: all 0.2s; margin-left: 4px; }
+        .action-icon:hover { background: #F1F5F9; color: var(--brand); }
+
+        /* Link Button */
+        .link-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--text-secondary); padding: 6px 10px; background: #F8FAFC; border: 1px solid var(--border); border-radius: 6px; text-decoration: none; transition: all 0.2s; }
+        .link-btn:hover { border-color: #CBD5E1; color: var(--text-primary); }
 
         /* Cards */
-        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
-        .card {
-            background: var(--bg-surface); border-radius: 16px; border: 1px solid var(--border);
-            box-shadow: var(--shadow-sm); padding: 24px; transition: all 0.2s var(--ease); cursor: pointer;
-        }
-        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: #CBD5E1; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+        .card { background: var(--bg-surface); border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 24px; transition: all 0.2s var(--ease); cursor: pointer; display: flex; flex-direction: column; }
+        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-float); border-color: #CBD5E1; }
         .card-title { font-weight: 600; color: var(--text-primary); margin-bottom: 8px; font-size: 15px; }
 
         /* Calendar */
-        .cal-frame { background: var(--bg-surface); border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow-md); padding: 24px; }
+        .cal-frame { background: var(--bg-surface); border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 24px; }
         .cal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--border); gap: 1px; }
         .cal-day-label { background: #F8FAFC; padding: 12px; text-align: center; font-size: 11px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; }
@@ -156,43 +154,22 @@
         .cal-cell:hover { background: #F8FAFC; }
         .cal-num { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; }
         .cal-cell.today .cal-num { background: var(--brand); color: white; box-shadow: 0 2px 4px rgba(37,99,235,0.4); }
-        
-        .event-pill {
-            background: var(--brand-surface); color: var(--brand); padding: 4px 8px; border-radius: 4px;
-            font-size: 11px; font-weight: 600; margin-bottom: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
-            border-left: 2px solid var(--brand); transition: transform 0.1s;
-        }
-        .event-pill:hover { transform: translateX(2px); background: #DBEAFE; }
+        .event-pill { background: var(--brand-surface); color: var(--brand); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-bottom: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; border-left: 2px solid var(--brand); }
 
         /* --- MODALS --- */
-        .overlay {
-            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px);
-            z-index: 500; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s;
-        }
+        .overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); z-index: 500; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
         .overlay.active { display: flex; opacity: 1; }
-        .modal {
-            background: var(--bg-surface); width: 500px; border-radius: 20px;
-            box-shadow: var(--shadow-float); transform: scale(0.96); transition: transform 0.2s var(--ease); overflow: hidden;
-        }
+        .modal { background: var(--bg-surface); width: 500px; border-radius: 20px; box-shadow: var(--shadow-float); transform: scale(0.96); transition: transform 0.2s var(--ease); overflow: hidden; }
         .overlay.active .modal { transform: scale(1); }
-        
-        .modal-body { padding: 32px; }
+        .modal-body { padding: 32px; max-height: 75vh; overflow-y: auto; }
         .field { margin-bottom: 20px; }
-        .label { display: block; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; }
-        .input {
-            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border);
-            font-family: inherit; font-size: 14px; color: var(--text-primary); transition: all 0.2s;
-        }
+        .label { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; }
+        .input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); font-family: inherit; font-size: 14px; color: var(--text-primary); transition: all 0.2s; }
         .input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
         .modal-foot { padding: 20px 32px; background: #F8FAFC; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px; }
 
         /* Toast */
-        .toast {
-            position: fixed; bottom: 32px; left: 50%; transform: translate(-50%, 20px);
-            background: #1E293B; color: white; padding: 10px 24px; border-radius: 50px;
-            font-size: 13px; font-weight: 500; opacity: 0; pointer-events: none; 
-            box-shadow: var(--shadow-float); transition: all 0.3s var(--ease); z-index: 1000;
-        }
+        .toast { position: fixed; bottom: 32px; left: 50%; transform: translate(-50%, 20px); background: #1E293B; color: white; padding: 10px 24px; border-radius: 50px; font-size: 13px; font-weight: 500; opacity: 0; pointer-events: none; box-shadow: var(--shadow-float); transition: all 0.3s var(--ease); z-index: 1000; }
         .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
         .hidden { display: none; }
@@ -205,7 +182,6 @@
     <header class="header">
         <div class="container-width header-content">
             <div class="logo" onclick="window.location.reload()">adscenes</div>
-            
             <div class="header-right">
                 <div style="position: relative;">
                     <button class="ctx-btn" id="clientBtn" onclick="toggleDrop(event, 'clientDrop')">
@@ -214,9 +190,7 @@
                     </button>
                     <div class="dropdown" id="clientDrop"></div>
                 </div>
-
                 <div style="width: 1px; height: 20px; background: var(--border);"></div>
-
                 <div style="position: relative;">
                     <button class="ctx-btn" style="padding: 0 8px;" onclick="toggleDrop(event, 'menuDrop')">
                         <svg class="icon-dots" viewBox="0 0 24 24">
@@ -226,19 +200,10 @@
                         </svg>
                     </button>
                     <div class="dropdown" id="menuDrop">
-                        <div class="drop-item" onclick="imp()">
-                            <span>Import JSON</span>
-                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                        </div>
-                        <div class="drop-item" onclick="exp()">
-                            <span>Export JSON</span>
-                            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                        </div>
+                        <div class="drop-item" onclick="imp()">Import JSON</div>
+                        <div class="drop-item" onclick="exp()">Export JSON</div>
                         <div class="drop-divider"></div>
-                        <div class="drop-item drop-danger" onclick="wipe()">
-                            <span>Clear Workspace</span>
-                            <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                        </div>
+                        <div class="drop-item drop-danger" onclick="wipe()">Clear Workspace</div>
                     </div>
                 </div>
             </div>
@@ -252,7 +217,6 @@
                     <svg class="icon-svg" style="stroke-width: 3;" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                     New Post
                 </button>
-
                 <div class="switcher">
                     <button class="switch-opt active" onclick="setView('table', this)">List</button>
                     <button class="switch-opt" onclick="setView('card', this)">Cards</button>
@@ -265,11 +229,12 @@
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 50px;">#</th>
+                                <th style="width: 100px;">Status</th>
                                 <th>Title</th>
                                 <th>Client</th>
                                 <th>Caption</th>
                                 <th>Alt Text</th>
+                                <th>Asset</th>
                                 <th>Date</th>
                             </tr>
                         </thead>
@@ -321,13 +286,18 @@
                         </div>
                     </div>
                     <div class="field">
-                        <label class="label">Alt Text</label>
-                        <input type="text" id="inpAlt" class="input" placeholder="Describe image for accessibility">
+                        <label class="label">Drive Link</label>
+                        <input type="url" id="inpLink" class="input" placeholder="https://drive.google.com...">
                     </div>
                     <div class="field">
-                        <label class="label">Caption</label>
-                        <textarea id="inpCaption" class="input" rows="3" placeholder="Post copy..."></textarea>
+                        <label class="label"><span>Caption</span><span id="charCount" style="font-weight:400; color:var(--text-tertiary);">0 chars</span></label>
+                        <textarea id="inpCaption" class="input" rows="4" placeholder="Post copy..." oninput="updateCount()"></textarea>
                     </div>
+                    <div class="field">
+                        <label class="label">Alt Text</label>
+                        <input type="text" id="inpAlt" class="input" placeholder="Accessibility description">
+                    </div>
+                    <input type="hidden" id="inpStatus" value="Draft">
                 </form>
             </div>
             <div class="modal-foot">
@@ -362,17 +332,16 @@
         let editId = null;
         let cDate = new Date();
 
-        // --- INIT ---
         window.onload = () => {
-            const lsP = localStorage.getItem('as_posts_v4');
-            const lsC = localStorage.getItem('as_clients_v4');
+            const lsP = localStorage.getItem('as_posts_v6');
+            const lsC = localStorage.getItem('as_clients_v6');
             if(lsP) posts = JSON.parse(lsP);
             if(lsC) clients = JSON.parse(lsC);
             if(clients.length === 0) clients = ['My Brand'];
             
-            // Migration: Ensure 'alt' exists in old data
-            posts = posts.map(p => ({...p, alt: p.alt || ''}));
-
+            // Migrate old posts to have status
+            posts = posts.map(p => ({...p, status: p.status || 'Draft'}));
+            
             render();
             document.onclick = (e) => {
                 if(!e.target.closest('.header-right')) {
@@ -383,8 +352,8 @@
         };
 
         function persist() {
-            localStorage.setItem('as_posts_v4', JSON.stringify(posts));
-            localStorage.setItem('as_clients_v4', JSON.stringify(clients));
+            localStorage.setItem('as_posts_v6', JSON.stringify(posts));
+            localStorage.setItem('as_clients_v6', JSON.stringify(clients));
             render();
         }
 
@@ -393,20 +362,12 @@
             const visible = filter === 'All Clients' ? posts : posts.filter(p => p.client === filter);
             document.getElementById('currentClient').textContent = filter;
             
-            // Dropdown
+            // Client Drop
             const cliList = document.getElementById('clientDrop');
             cliList.innerHTML = `
-                <div class="drop-item ${filter==='All Clients'?'selected':''}" onclick="setFilter('All Clients')">
-                    <span>All Clients</span>
-                    <span style="font-size:11px; opacity:0.6">${posts.length}</span>
-                </div>
+                <div class="drop-item ${filter==='All Clients'?'selected':''}" onclick="setFilter('All Clients')"><span>All Clients</span><span style="font-size:11px; opacity:0.6">${posts.length}</span></div>
                 <div class="drop-divider"></div>
-                ${clients.map(c => `
-                    <div class="drop-item ${filter===c?'selected':''}" onclick="setFilter('${c}')">
-                        <span>${c}</span>
-                        <span style="font-size:11px; opacity:0.6">${posts.filter(p=>p.client===c).length}</span>
-                    </div>
-                `).join('')}
+                ${clients.map(c => `<div class="drop-item ${filter===c?'selected':''}" onclick="setFilter('${c}')"><span>${c}</span><span style="font-size:11px; opacity:0.6">${posts.filter(p=>p.client===c).length}</span></div>`).join('')}
                 <div class="drop-divider"></div>
                 <div class="drop-item" style="color:var(--brand); font-weight:600;" onclick="openCli()">+ Add Client</div>
             `;
@@ -414,16 +375,27 @@
             // Table
             const tbody = document.getElementById('tbody');
             if(visible.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 60px; color:var(--text-tertiary);">No posts found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 60px; color:var(--text-tertiary);">No posts found.</td></tr>`;
             } else {
-                tbody.innerHTML = visible.map((p, i) => `
+                tbody.innerHTML = visible.map((p) => `
                     <tr onclick="edit('${p.id}')" style="cursor:pointer">
-                        <td style="color:var(--text-tertiary)">${i+1}</td>
+                        <td>${getStatusPill(p)}</td>
                         <td style="font-weight:500; color:var(--text-primary)">${esc(p.title)}</td>
                         <td><span class="pill">${esc(p.client)}</span></td>
-                        <td>${esc(p.caption).substring(0, 40) || '—'}</td>
-                        <td>${p.alt ? `<span style="color:var(--text-primary);">${esc(p.alt).substring(0, 30)}${p.alt.length>30?'...':''}</span>` : '<span style="color:var(--border);">—</span>'}</td>
-                        <td>${formatDate(p.date)}</td>
+                        <td>
+                            <div style="display:flex; align-items:center;">
+                                <span style="margin-right:8px;">${esc(p.caption).substring(0, 30)}${p.caption.length>30?'...':''}</span>
+                                ${p.caption ? `<div class="action-icon" onclick="copy(event, '${esc(p.caption)}')" title="Copy Caption">📋</div>` : ''}
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex; align-items:center;">
+                                <span style="color:var(--text-secondary); margin-right:8px;">${p.alt ? esc(p.alt).substring(0, 20)+'...' : '—'}</span>
+                                ${p.alt ? `<div class="action-icon" onclick="copy(event, '${esc(p.alt)}')" title="Copy Alt Text">📋</div>` : ''}
+                            </div>
+                        </td>
+                        <td>${p.link ? `<a href="${p.link}" target="_blank" onclick="event.stopPropagation()" class="link-btn">Asset ↗</a>` : '<span style="color:#E2E8F0">—</span>'}</td>
+                        <td style="color:var(--text-secondary)">${formatDate(p.date)}</td>
                     </tr>
                 `).join('');
             }
@@ -432,11 +404,16 @@
             const cgrid = document.getElementById('cardgrid');
             cgrid.innerHTML = visible.length ? visible.map(p => `
                 <div class="card" onclick="edit('${p.id}')">
-                    <div class="pill" style="margin-bottom:12px;">${esc(p.client)}</div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                        <span class="pill">${esc(p.client)}</span>
+                        ${getStatusPill(p)}
+                    </div>
                     <div class="card-title">${esc(p.title)}</div>
-                    <div style="font-size:13px; color:var(--text-secondary); margin-bottom:12px; line-height:1.5;">${esc(p.caption).substring(0,80) || 'No caption'}</div>
-                    ${p.alt ? `<div title="${esc(p.alt)}" style="font-size:12px; margin-bottom:12px; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"><span class="alt-badge">ALT</span> ${esc(p.alt)}</div>` : ''}
-                    <div style="font-size:12px; color:var(--text-tertiary); margin-top: auto;">${formatDate(p.date)}</div>
+                    <div style="font-size:13px; color:var(--text-secondary); margin-bottom:16px; line-height:1.5;">${esc(p.caption).substring(0,80) || 'No caption'}</div>
+                    <div style="margin-top:auto; display:flex; justify-content:space-between; align-items:center;">
+                         <span style="font-size:12px; color:var(--text-tertiary);">${formatDate(p.date)}</span>
+                         ${p.link ? `<a href="${p.link}" target="_blank" onclick="event.stopPropagation()" class="link-btn" style="padding:4px 8px; font-size:11px;">View Asset</a>` : ''}
+                    </div>
                 </div>
             `).join('') : '<div style="text-align:center; color:var(--text-tertiary); grid-column:1/-1; padding:40px;">No posts here.</div>';
 
@@ -446,84 +423,75 @@
         function renderCal(list) {
             const mNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             document.getElementById('calTitle').textContent = `${mNames[cDate.getMonth()]} ${cDate.getFullYear()}`;
-            
             const grid = document.getElementById('calgrid');
             const y = cDate.getFullYear(), m = cDate.getMonth();
             const firstDay = new Date(y, m, 1).getDay();
             const daysInM = new Date(y, m + 1, 0).getDate();
             const today = new Date().toISOString().split('T')[0];
-
-            let html = `
-                <div class="cal-day-label">Sun</div><div class="cal-day-label">Mon</div><div class="cal-day-label">Tue</div>
-                <div class="cal-day-label">Wed</div><div class="cal-day-label">Thu</div><div class="cal-day-label">Fri</div><div class="cal-day-label">Sat</div>
-            `;
-
+            let html = `<div class="cal-day-label">Sun</div><div class="cal-day-label">Mon</div><div class="cal-day-label">Tue</div><div class="cal-day-label">Wed</div><div class="cal-day-label">Thu</div><div class="cal-day-label">Fri</div><div class="cal-day-label">Sat</div>`;
             for(let i=0; i<firstDay; i++) html += `<div class="cal-cell" style="background:#F8FAFC"></div>`;
-
             for(let d=1; d<=daysInM; d++) {
                 const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                 const isToday = dateStr === today;
                 const pList = list.filter(p => p.date === dateStr);
-
-                html += `
-                    <div class="cal-cell ${isToday?'today':''}" onclick="openModal('${dateStr}')">
-                        <div class="cal-num">${d}</div>
-                        ${pList.map(p => `
-                            <div class="event-pill" onclick="event.stopPropagation(); edit('${p.id}')">${esc(p.title)}</div>
-                        `).join('')}
-                    </div>
-                `;
+                html += `<div class="cal-cell ${isToday?'today':''}" onclick="openModal('${dateStr}')"><div class="cal-num">${d}</div>${pList.map(p => `<div class="event-pill" onclick="event.stopPropagation(); edit('${p.id}')">${esc(p.title)}</div>`).join('')}</div>`;
             }
             grid.innerHTML = html;
         }
 
-        // --- ACTIONS ---
+        // --- HELPERS ---
+        function getStatusPill(p) {
+            const cls = p.status === 'Posted' ? 'status-posted' : (p.status === 'Ready' ? 'status-ready' : 'status-draft');
+            return `<span class="status-pill ${cls}" onclick="cycleStatus(event, '${p.id}')">${p.status}</span>`;
+        }
+        
+        function cycleStatus(e, id) {
+            e.stopPropagation();
+            const idx = posts.findIndex(p => p.id === id);
+            const s = posts[idx].status;
+            posts[idx].status = s === 'Draft' ? 'Ready' : (s === 'Ready' ? 'Posted' : 'Draft');
+            persist();
+        }
+
+        function copy(e, text) {
+            e.stopPropagation();
+            navigator.clipboard.writeText(text);
+            toast('Copied to Clipboard!');
+        }
+        
+        function updateCount() {
+            const len = document.getElementById('inpCaption').value.length;
+            document.getElementById('charCount').textContent = len + ' chars';
+        }
+
+        // --- CORE ACTIONS ---
         function setView(v, btn) {
             document.querySelectorAll('.view-container').forEach(e => e.classList.remove('active'));
             document.getElementById('v-'+v).classList.add('active');
             document.querySelectorAll('.switch-opt').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
         }
-
-        function toggleDrop(e, id) {
-            e.stopPropagation();
-            const el = document.getElementById(id);
-            const btn = e.currentTarget;
-            const wasOpen = el.classList.contains('show');
-            document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('show'));
-            document.querySelectorAll('.ctx-btn').forEach(b => b.classList.remove('active'));
-            if(!wasOpen) { el.classList.add('show'); btn.classList.add('active'); }
-        }
-
+        function toggleDrop(e, id) { e.stopPropagation(); document.getElementById(id).classList.toggle('show'); document.getElementById(e.currentTarget.id).classList.toggle('active'); }
         function setFilter(c) { filter = c; render(); }
 
-        // --- MODAL & FORM ---
+        // --- MODAL ---
         function openModal(dateStr = null) {
-            editId = null;
-            document.getElementById('form').reset();
-            document.getElementById('btnDel').style.display = 'none';
-            const sel = document.getElementById('inpClient');
-            sel.innerHTML = clients.map(c => `<option>${c}</option>`).join('');
+            editId = null; document.getElementById('form').reset(); document.getElementById('btnDel').style.display = 'none';
+            const sel = document.getElementById('inpClient'); sel.innerHTML = clients.map(c => `<option>${c}</option>`).join('');
             if(filter !== 'All Clients') sel.value = filter;
             document.getElementById('inpDate').value = dateStr || new Date().toISOString().split('T')[0];
+            updateCount();
             document.getElementById('postModal').classList.add('active');
         }
-
         function edit(id) {
-            const p = posts.find(x => x.id === id);
-            if(!p) return;
-            editId = id;
-            const sel = document.getElementById('inpClient');
-            sel.innerHTML = clients.map(c => `<option>${c}</option>`).join('');
+            const p = posts.find(x => x.id === id); if(!p) return; editId = id;
+            const sel = document.getElementById('inpClient'); sel.innerHTML = clients.map(c => `<option>${c}</option>`).join('');
             sel.value = p.client;
-            document.getElementById('inpTitle').value = p.title;
-            document.getElementById('inpDate').value = p.date;
-            document.getElementById('inpCaption').value = p.caption;
-            document.getElementById('inpAlt').value = p.alt || '';
-            document.getElementById('btnDel').style.display = 'block';
-            document.getElementById('postModal').classList.add('active');
+            document.getElementById('inpTitle').value = p.title; document.getElementById('inpDate').value = p.date;
+            document.getElementById('inpLink').value = p.link || ''; document.getElementById('inpCaption').value = p.caption;
+            document.getElementById('inpAlt').value = p.alt || ''; document.getElementById('inpStatus').value = p.status;
+            updateCount(); document.getElementById('btnDel').style.display = 'block'; document.getElementById('postModal').classList.add('active');
         }
-
         function save(e) {
             e.preventDefault();
             const p = {
@@ -531,70 +499,29 @@
                 title: document.getElementById('inpTitle').value,
                 client: document.getElementById('inpClient').value,
                 date: document.getElementById('inpDate').value,
+                link: document.getElementById('inpLink').value,
                 caption: document.getElementById('inpCaption').value,
-                alt: document.getElementById('inpAlt').value
+                alt: document.getElementById('inpAlt').value,
+                status: document.getElementById('inpStatus').value || 'Draft'
             };
-            if(editId) {
-                const idx = posts.findIndex(x => x.id === editId);
-                posts[idx] = p;
-                toast('Post Updated');
-            } else {
-                posts.push(p);
-                toast('Post Created');
-            }
-            closeModal();
-            persist();
+            if(editId) { const idx = posts.findIndex(x => x.id === editId); posts[idx] = p; toast('Post Updated'); } 
+            else { posts.push(p); toast('Post Created'); }
+            closeModal(); persist();
         }
-
-        function delPost() {
-            if(confirm('Delete this post?')) {
-                posts = posts.filter(x => x.id !== editId);
-                closeModal();
-                persist();
-                toast('Post Deleted');
-            }
-        }
-
+        function delPost() { if(confirm('Delete?')) { posts = posts.filter(x => x.id !== editId); closeModal(); persist(); toast('Deleted'); } }
         function closeModal() { document.querySelectorAll('.overlay').forEach(o => o.classList.remove('active')); }
 
         // --- UTILS ---
         function openCli() { document.getElementById('cliModal').classList.add('active'); setTimeout(() => document.getElementById('newCliName').focus(), 100); }
-        function addCli() {
-            const n = document.getElementById('newCliName').value.trim();
-            if(n && !clients.includes(n)) {
-                clients.push(n); setFilter(n); persist(); toast('Client Added');
-            }
-            closeModal();
-        }
-        function exp() {
-            const blob = new Blob([JSON.stringify({posts, clients}, null, 2)], {type:'application/json'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = 'adscenes-backup.json';
-            a.click();
-        }
+        function addCli() { const n = document.getElementById('newCliName').value.trim(); if(n && !clients.includes(n)) { clients.push(n); setFilter(n); persist(); toast('Client Added'); } closeModal(); }
+        function exp() { const blob = new Blob([JSON.stringify({posts, clients}, null, 2)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'adscenes-backup.json'; a.click(); }
         function imp() { document.getElementById('file').click(); }
-        function readFile(e) {
-            const f = e.target.files[0]; if(!f) return;
-            const r = new FileReader();
-            r.onload = (ev) => {
-                try {
-                    const d = JSON.parse(ev.target.result);
-                    if(d.posts) posts = d.posts.map(p => ({...p, alt: p.alt || ''}));
-                    if(d.clients) clients = d.clients;
-                    persist(); toast('Data Imported');
-                } catch(x) { alert('Invalid File'); }
-            };
-            r.readAsText(f); e.target.value = '';
-        }
-        function wipe() { if(confirm('Clear all data?')) { posts=[]; clients=['My Brand']; persist(); toast('Workspace Cleared'); } }
+        function readFile(e) { const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = (ev) => { try { const d = JSON.parse(ev.target.result); if(d.posts) posts = d.posts.map(p => ({...p, status:p.status||'Draft'})); if(d.clients) clients = d.clients; persist(); toast('Imported'); } catch(x) { alert('Invalid File'); } }; r.readAsText(f); e.target.value = ''; }
+        function wipe() { if(confirm('Clear all?')) { posts=[]; clients=['My Brand']; persist(); toast('Cleared'); } }
         function movMonth(n) { cDate.setMonth(cDate.getMonth()+n); render(); }
         function currMonth() { cDate = new Date(); render(); }
-        function toast(m) {
-            const t = document.getElementById('toast');
-            t.textContent = m; t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2000);
-        }
-        function esc(t) { return t ? t.replace(/</g, "&lt;").replace(/>/g, "&gt;") : ''; }
+        function toast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
+        function esc(t) { return t ? t.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") : ''; }
         function formatDate(s) { return new Date(s).toLocaleDateString('en-US', {month:'short', day:'numeric'}); }
 
     </script>
