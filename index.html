@@ -327,17 +327,17 @@
     <script>
         // --- DATA ---
         let posts = [];
-        let clients = ['My Brand'];
+        let clients = [];
         let filter = 'All Clients';
         let editId = null;
         let cDate = new Date();
 
         window.onload = () => {
-            const lsP = localStorage.getItem('as_posts_v6');
-            const lsC = localStorage.getItem('as_clients_v6');
+            const lsP = localStorage.getItem('as_posts_v7');
+            const lsC = localStorage.getItem('as_clients_v7');
             if(lsP) posts = JSON.parse(lsP);
             if(lsC) clients = JSON.parse(lsC);
-            if(clients.length === 0) clients = ['My Brand'];
+            // NOTE: Clients now starts empty by default
             
             // Migrate old posts to have status
             posts = posts.map(p => ({...p, status: p.status || 'Draft'}));
@@ -352,8 +352,8 @@
         };
 
         function persist() {
-            localStorage.setItem('as_posts_v6', JSON.stringify(posts));
-            localStorage.setItem('as_clients_v6', JSON.stringify(clients));
+            localStorage.setItem('as_posts_v7', JSON.stringify(posts));
+            localStorage.setItem('as_clients_v7', JSON.stringify(clients));
             render();
         }
 
@@ -517,7 +517,7 @@
         function exp() { const blob = new Blob([JSON.stringify({posts, clients}, null, 2)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'adscenes-backup.json'; a.click(); }
         function imp() { document.getElementById('file').click(); }
         function readFile(e) { const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = (ev) => { try { const d = JSON.parse(ev.target.result); if(d.posts) posts = d.posts.map(p => ({...p, status:p.status||'Draft'})); if(d.clients) clients = d.clients; persist(); toast('Imported'); } catch(x) { alert('Invalid File'); } }; r.readAsText(f); e.target.value = ''; }
-        function wipe() { if(confirm('Clear all?')) { posts=[]; clients=['My Brand']; persist(); toast('Cleared'); } }
+        function wipe() { if(confirm('Clear all?')) { posts=[]; clients=[]; persist(); toast('Cleared'); } }
         function movMonth(n) { cDate.setMonth(cDate.getMonth()+n); render(); }
         function currMonth() { cDate = new Date(); render(); }
         function toast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
