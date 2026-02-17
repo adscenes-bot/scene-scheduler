@@ -156,20 +156,21 @@
         .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-float); border-color: #CBD5E1; }
         .card-title { font-weight: 600; color: var(--text-primary); margin-bottom: 8px; font-size: 15px; }
 
-        /* CALENDAR - FINESSE FIX */
+        /* CALENDAR - THE FIX */
         .cal-frame {
             background: var(--bg-surface); border-radius: 20px; border: 1px solid var(--border);
             box-shadow: var(--shadow-sm); padding: 24px;
         }
         .cal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         
-        /* The Fixed Layout */
+        /* The Fixed Layout: Full Border */
         .cal-grid {
             display: grid; 
             grid-template-columns: repeat(7, 1fr); 
             width: 100%;
-            border-top: 1px solid var(--border);
-            border-left: 1px solid var(--border);
+            border: 1px solid var(--border); /* Full container border */
+            border-radius: 12px;
+            overflow: hidden;
         }
         
         .cal-day-label {
@@ -178,6 +179,7 @@
             border-right: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
         }
+        .cal-day-label:nth-child(7n) { border-right: none; } /* NO BORDER ON LAST COLUMN HEADER */
         
         .cal-cell {
             background: white; min-height: 140px; padding: 10px; cursor: pointer;
@@ -185,6 +187,7 @@
             border-bottom: 1px solid var(--border);
             transition: background 0.1s;
         }
+        .cal-cell:nth-child(7n) { border-right: none; } /* NO BORDER ON LAST COLUMN CELL */
         .cal-cell:hover { background: #F9FAFB; }
         
         .cal-num { 
@@ -203,7 +206,7 @@
         /* --- MODALS (Finesse) --- */
         .overlay {
             position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); 
-            backdrop-filter: blur(8px); /* Blur Fix */
+            backdrop-filter: blur(8px);
             z-index: 500; display: none; align-items: center; justify-content: center; 
             opacity: 0; transition: opacity 0.2s;
         }
@@ -225,7 +228,6 @@
         .field { margin-bottom: 24px; }
         .label { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
         
-        /* Premium Input Style */
         .input {
             width: 100%; padding: 14px 16px; border-radius: 12px; 
             border: 1px solid transparent; background: var(--input-bg);
@@ -422,55 +424,44 @@
         let editId = null;
         let cDate = new Date();
 
+        // New Master Keys
         const MASTER_KEY_P = 'adscenes_master_posts';
         const MASTER_KEY_C = 'adscenes_master_clients';
 
-        // LEGACY KEYS (The ones you might be using)
-        const LEGACY_KEYS = [
-            'as_posts_v9', 'as_posts_v8', 'as_posts_v7', 'as_posts_v6', 'as_posts_v5', 'as_posts_v4', 'as_posts_v3', 'as_posts_v2', 'as_posts'
-        ];
-        const LEGACY_CLIENTS = [
-            'as_clients_v9', 'as_clients_v8', 'as_clients_v7', 'as_clients_v6', 'as_clients_v5', 'as_clients_v4', 'as_clients_v3', 'as_clients_v2', 'as_clients'
-        ];
+        // History of keys to migrate from
+        const LEGACY_KEYS = ['as_posts_v9', 'as_posts_v8', 'as_posts_v7', 'as_posts_v6', 'as_posts_v5', 'as_posts_v4', 'as_posts_v3', 'as_posts_v2', 'as_posts'];
+        const LEGACY_CLIENTS = ['as_clients_v9', 'as_clients_v8', 'as_clients_v7', 'as_clients_v6', 'as_clients_v5', 'as_clients_v4', 'as_clients_v3', 'as_clients_v2', 'as_clients'];
 
         window.onload = () => {
-            // 1. Try Load Master Data
+            // 1. Try to load Master Data
             let pData = localStorage.getItem(MASTER_KEY_P);
             let cData = localStorage.getItem(MASTER_KEY_C);
 
-            // 2. If no master data, HUNT for legacy data
+            // 2. Migration Logic: If no master data, hunt for old data
             if (!pData) {
                 for (let key of LEGACY_KEYS) {
                     const found = localStorage.getItem(key);
-                    if (found && found !== '[]') {
-                        pData = found;
-                        console.log("Restored data from legacy key:", key);
-                        break;
-                    }
+                    if (found && found !== '[]') { pData = found; break; }
                 }
             }
             if (!cData) {
                 for (let key of LEGACY_CLIENTS) {
                     const found = localStorage.getItem(key);
-                    if (found && found !== '[]') {
-                        cData = found;
-                        break;
-                    }
+                    if (found && found !== '[]') { cData = found; break; }
                 }
             }
 
-            // 3. Initialize
+            // 3. Init
             if (pData) posts = JSON.parse(pData);
             if (cData) clients = JSON.parse(cData);
             
-            // 4. Save to Master immediately (Migration Complete)
+            // 4. Save to Master immediately
             persist();
             
-            // Clean up data
+            // Clean up old status
             posts = posts.map(p => ({...p, status: p.status || 'Draft'}));
             render();
             
-            // Global clicks
             document.onclick = (e) => {
                 if(!e.target.closest('.header-right')) {
                     document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('show'));
