@@ -10,8 +10,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
 
         :root {
-            /* --- THEME: "Zen Productivity" --- */
-            --bg-body: #F8FAFC;         
+            /* --- THEME: "Studio Grade" --- */
+            --bg-body: #F1F5F9;         
             --bg-surface: #FFFFFF;
             
             --text-primary: #0F172A;    
@@ -19,17 +19,20 @@
             --text-tertiary: #94A3B8;   
             
             --brand: #2563EB;           
-            --brand-surface: #EFF6FF;   
+            --brand-subtle: #EFF6FF;
+            --brand-hover: #1D4ED8;   
             
             --border: #E2E8F0;
+            --input-bg: #F8FAFC;
             
             /* Status Colors */
             --status-draft-bg: #F1F5F9; --status-draft-text: #64748B;
-            --status-ready-bg: #F0FDF4; --status-ready-text: #166534;
+            --status-ready-bg: #F0FDF4; --status-ready-text: #15803D;
             --status-posted-bg: #EFF6FF; --status-posted-text: #1E40AF;
 
-            --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
-            --shadow-float: 0 10px 15px -3px rgba(15, 23, 42, 0.05);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-float: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+            --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             
             --ease: cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -46,12 +49,12 @@
             overflow-y: scroll;
         }
 
-        .container-width { max-width: 1400px; margin: 0 auto; width: 100%; padding: 0 32px; }
+        .container-width { max-width: 1400px; margin: 0 auto; width: 100%; padding: 0 40px; }
 
         /* --- HEADER --- */
         .header {
-            height: 64px;
-            background: rgba(255, 255, 255, 0.9);
+            height: 72px;
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
             display: flex; align-items: center;
@@ -59,46 +62,47 @@
         }
 
         .header-content { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .logo { font-weight: 700; font-size: 20px; letter-spacing: -0.03em; color: var(--text-primary); cursor: pointer; user-select: none; }
+        .logo { font-weight: 800; font-size: 22px; letter-spacing: -0.04em; color: var(--text-primary); cursor: pointer; user-select: none; }
         .logo:hover { color: var(--brand); }
 
         .header-right { display: flex; align-items: center; gap: 16px; }
 
         /* Buttons & Icons */
         .ctx-btn {
-            height: 36px; padding: 0 12px; border-radius: 8px;
+            height: 40px; padding: 0 16px; border-radius: 10px;
             background: transparent; border: 1px solid transparent;
             color: var(--text-secondary); font-size: 13px; font-weight: 500;
             cursor: pointer; display: flex; align-items: center; gap: 8px;
             transition: all 0.2s;
         }
-        .ctx-btn:hover { background: white; border-color: var(--border); color: var(--text-primary); }
-        .ctx-btn.active { background: var(--brand-surface); color: var(--brand); border-color: rgba(37,99,235,0.2); font-weight: 600; }
+        .ctx-btn:hover { background: white; border-color: var(--border); color: var(--text-primary); box-shadow: var(--shadow-sm); }
+        .ctx-btn.active { background: var(--brand-subtle); color: var(--brand); border-color: rgba(37,99,235,0.2); font-weight: 600; }
 
         .btn {
-            height: 40px; padding: 0 20px; border-radius: 10px; font-size: 13px; font-weight: 600;
+            height: 40px; padding: 0 20px; border-radius: 12px; font-size: 13px; font-weight: 600;
             display: inline-flex; align-items: center; gap: 8px;
             cursor: pointer; transition: all 0.2s var(--ease); border: none;
         }
-        .btn-primary { background: var(--brand); color: white; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3); }
-        .btn-primary:hover { background: #1D4ED8; transform: translateY(-1px); }
+        .btn-primary { background: var(--brand); color: white; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2); }
+        .btn-primary:hover { background: var(--brand-hover); transform: translateY(-1px); }
 
         .icon-svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; }
         .icon-dots { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; fill: none; }
 
         /* Dropdowns */
         .dropdown {
-            position: absolute; top: calc(100% + 4px); right: 0;
+            position: absolute; top: calc(100% + 6px); right: 0;
             background: var(--bg-surface); border: 1px solid var(--border);
-            border-radius: 12px; box-shadow: var(--shadow-float);
-            min-width: 220px; padding: 6px; display: none; z-index: 200;
+            border-radius: 14px; box-shadow: var(--shadow-float);
+            min-width: 240px; padding: 6px; display: none; z-index: 200;
             animation: slideDown 0.15s var(--ease); transform-origin: top right;
         }
         .dropdown.show { display: block; }
         @keyframes slideDown { from { opacity: 0; transform: scale(0.98) translateY(-4px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-        .drop-item { padding: 10px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--text-primary); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        
+        .drop-item { padding: 12px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--text-primary); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .drop-item:hover { background: var(--bg-body); }
-        .drop-item.selected { color: var(--brand); background: var(--brand-surface); }
+        .drop-item.selected { color: var(--brand); background: var(--brand-subtle); }
         .drop-divider { height: 1px; background: var(--border); margin: 6px 0; }
         .drop-danger { color: #EF4444; } .drop-danger:hover { background: #FEF2F2; }
 
@@ -106,77 +110,149 @@
         .main-wrapper { padding-top: 40px; padding-bottom: 60px; flex: 1; }
         .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
 
-        .switcher { background: white; border: 1px solid var(--border); padding: 3px; border-radius: 10px; display: flex; }
-        .switch-opt { padding: 6px 16px; border-radius: 7px; font-size: 12px; font-weight: 600; color: var(--text-secondary); cursor: pointer; border: none; background: transparent; transition: all 0.2s; }
+        .switcher { background: white; border: 1px solid var(--border); padding: 4px; border-radius: 12px; display: flex; box-shadow: var(--shadow-sm); }
+        .switch-opt { padding: 6px 18px; border-radius: 8px; font-size: 12px; font-weight: 600; color: var(--text-secondary); cursor: pointer; border: none; background: transparent; transition: all 0.2s; }
         .switch-opt:hover { color: var(--text-primary); }
         .switch-opt.active { background: var(--bg-body); color: var(--text-primary); box-shadow: var(--shadow-sm); }
 
-        /* --- TABLE --- */
+        /* --- VIEWS --- */
         .view-container { display: none; animation: fadeIn 0.3s var(--ease); }
         .view-container.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-        .table-frame { background: var(--bg-surface); border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 16px 24px; font-size: 11px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); background: #FAFAFA; }
-        td { padding: 18px 24px; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: middle; color: var(--text-secondary); }
+        /* TABLE */
+        .table-frame { background: var(--bg-surface); border-radius: 18px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        th { text-align: left; padding: 18px 24px; font-size: 11px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); background: #FAFAFA; }
+        td { padding: 20px 24px; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: middle; color: var(--text-secondary); }
         tr:last-child td { border-bottom: none; }
         tr:hover td { background: #F8FAFC; color: var(--text-primary); }
         
-        .pill { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; background: var(--brand-surface); color: var(--brand); }
+        /* Truncation & Icons */
+        .text-truncate {
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; max-width: 100%;
+        }
+        .content-cell { display: flex; align-items: center; justify-content: space-between; gap: 12px; max-width: 300px; }
+        .copy-btn {
+            opacity: 0; transition: opacity 0.2s; cursor: pointer; color: var(--text-tertiary);
+            flex-shrink: 0; display: flex; align-items: center;
+        }
+        tr:hover .copy-btn { opacity: 1; }
+        .copy-btn:hover { color: var(--brand); }
+
+        .pill { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; background: var(--brand-subtle); color: var(--brand); }
         
-        /* Status Pill */
         .status-pill { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; user-select: none; transition: all 0.2s; }
         .status-draft { background: var(--status-draft-bg); color: var(--status-draft-text); }
         .status-ready { background: var(--status-ready-bg); color: var(--status-ready-text); }
         .status-posted { background: var(--status-posted-bg); color: var(--status-posted-text); }
-        
-        /* Action Buttons */
-        .action-icon { width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; color: var(--text-tertiary); cursor: pointer; transition: all 0.2s; margin-left: 4px; }
-        .action-icon:hover { background: #F1F5F9; color: var(--brand); }
 
         .link-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--text-secondary); padding: 6px 10px; background: #F8FAFC; border: 1px solid var(--border); border-radius: 6px; text-decoration: none; transition: all 0.2s; }
         .link-btn:hover { border-color: #CBD5E1; color: var(--text-primary); }
 
-        /* Cards */
+        /* CARDS */
         .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
-        .card { background: var(--bg-surface); border-radius: 16px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 24px; transition: all 0.2s var(--ease); cursor: pointer; display: flex; flex-direction: column; }
+        .card { background: var(--bg-surface); border-radius: 18px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 24px; transition: all 0.2s var(--ease); cursor: pointer; display: flex; flex-direction: column; }
         .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-float); border-color: #CBD5E1; }
         .card-title { font-weight: 600; color: var(--text-primary); margin-bottom: 8px; font-size: 15px; }
 
-        /* Calendar */
-        .cal-frame { background: var(--bg-surface); border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 24px; }
+        /* CALENDAR - FINESSE FIX */
+        .cal-frame {
+            background: var(--bg-surface); border-radius: 20px; border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm); padding: 24px;
+        }
         .cal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--border); gap: 1px; }
-        .cal-day-label { background: #F8FAFC; padding: 12px; text-align: center; font-size: 11px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; }
-        .cal-cell { background: white; min-height: 140px; padding: 12px; cursor: pointer; transition: background 0.1s; }
-        .cal-cell:hover { background: #F8FAFC; }
-        .cal-num { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; }
-        .cal-cell.today .cal-num { background: var(--brand); color: white; box-shadow: 0 2px 4px rgba(37,99,235,0.4); }
-        .event-pill { background: var(--brand-surface); color: var(--brand); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-bottom: 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; border-left: 2px solid var(--brand); }
+        
+        /* The Fixed Layout */
+        .cal-grid {
+            display: grid; 
+            grid-template-columns: repeat(7, 1fr); 
+            width: 100%;
+            border-top: 1px solid var(--border);
+            border-left: 1px solid var(--border);
+        }
+        
+        .cal-day-label {
+            background: #F8FAFC; padding: 12px; text-align: center;
+            font-size: 11px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .cal-cell {
+            background: white; min-height: 140px; padding: 10px; cursor: pointer;
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            transition: background 0.1s;
+        }
+        .cal-cell:hover { background: #F9FAFB; }
+        
+        .cal-num { 
+            width: 28px; height: 28px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; 
+        }
+        .cal-cell.today .cal-num { background: var(--brand); color: white; box-shadow: 0 4px 10px rgba(37,99,235,0.3); }
+        .event-pill { 
+            background: var(--brand-subtle); color: var(--brand); padding: 4px 8px; border-radius: 6px; 
+            font-size: 11px; font-weight: 600; margin-bottom: 4px; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+            border-left: 3px solid var(--brand); 
+        }
 
-        /* --- MODALS --- */
-        .overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); z-index: 500; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+        /* --- MODALS (Finesse) --- */
+        .overlay {
+            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); 
+            backdrop-filter: blur(8px); /* Blur Fix */
+            z-index: 500; display: none; align-items: center; justify-content: center; 
+            opacity: 0; transition: opacity 0.2s;
+        }
         .overlay.active { display: flex; opacity: 1; }
-        .modal { background: var(--bg-surface); width: 500px; border-radius: 20px; box-shadow: var(--shadow-float); transform: scale(0.96); transition: transform 0.2s var(--ease); overflow: hidden; }
+        
+        .modal {
+            background: var(--bg-surface); width: 540px; border-radius: 24px;
+            box-shadow: var(--shadow-modal); 
+            transform: scale(0.96); transition: transform 0.2s var(--ease); overflow: hidden;
+            display: flex; flex-direction: column;
+            max-height: 90vh;
+        }
         .overlay.active .modal { transform: scale(1); }
-        .modal-body { padding: 32px; max-height: 75vh; overflow-y: auto; }
-        .field { margin-bottom: 20px; }
-        .label { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; }
-        .input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); font-family: inherit; font-size: 14px; color: var(--text-primary); transition: all 0.2s; }
-        .input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
-        .modal-foot { padding: 20px 32px; background: #F8FAFC; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px; }
+        
+        .modal-header { padding: 24px 32px; border-bottom: 1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+        .modal-body { padding: 32px; overflow-y: auto; }
+        .modal-foot { padding: 24px 32px; background: #F8FAFC; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px; }
 
-        /* Client Manager Styles */
-        .cli-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+        .field { margin-bottom: 24px; }
+        .label { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+        
+        /* Premium Input Style */
+        .input {
+            width: 100%; padding: 14px 16px; border-radius: 12px; 
+            border: 1px solid transparent; background: var(--input-bg);
+            font-family: inherit; font-size: 14px; color: var(--text-primary); 
+            transition: all 0.2s;
+        }
+        .input:hover { background: #F1F5F9; }
+        .input:focus { background: white; border-color: var(--brand); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+
+        /* Client Manager Rows */
+        .cli-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
         .cli-row:last-child { border-bottom: none; }
-        .cli-name-input { border: none; background: transparent; font-family: inherit; font-size: 14px; font-weight: 500; color: var(--text-primary); flex: 1; margin-right: 12px; padding: 4px; border-radius: 4px; }
-        .cli-name-input:focus { background: #F1F5F9; outline: none; }
-        .cli-action { font-size: 12px; color: var(--brand); cursor: pointer; font-weight: 600; }
-        .cli-action:hover { text-decoration: underline; }
+        .cli-input-wrap { flex: 1; }
+        .cli-btn {
+            width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+            color: var(--text-tertiary); cursor: pointer; transition: all 0.2s;
+        }
+        .cli-btn:hover { background: var(--input-bg); color: var(--text-primary); }
+        .cli-btn.danger:hover { background: #FEF2F2; color: #EF4444; }
 
         /* Toast */
-        .toast { position: fixed; bottom: 32px; left: 50%; transform: translate(-50%, 20px); background: #1E293B; color: white; padding: 10px 24px; border-radius: 50px; font-size: 13px; font-weight: 500; opacity: 0; pointer-events: none; box-shadow: var(--shadow-float); transition: all 0.3s var(--ease); z-index: 1000; }
+        .toast {
+            position: fixed; bottom: 32px; left: 50%; transform: translate(-50%, 20px);
+            background: #1E293B; color: white; padding: 12px 24px; border-radius: 50px;
+            font-size: 13px; font-weight: 500; opacity: 0; pointer-events: none; 
+            box-shadow: var(--shadow-modal); transition: all 0.3s var(--ease); z-index: 1000;
+        }
         .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
         .hidden { display: none; }
@@ -237,12 +313,12 @@
                         <thead>
                             <tr>
                                 <th style="width: 100px;">Status</th>
-                                <th>Title</th>
-                                <th>Client</th>
+                                <th style="width: 20%;">Title</th>
+                                <th style="width: 15%;">Client</th>
                                 <th>Caption</th>
                                 <th>Alt Text</th>
-                                <th>Asset</th>
-                                <th>Date</th>
+                                <th style="width: 100px;">Asset</th>
+                                <th style="width: 120px;">Date</th>
                             </tr>
                         </thead>
                         <tbody id="tbody"></tbody>
@@ -272,8 +348,8 @@
 
     <div class="overlay" id="postModal">
         <div class="modal">
-            <div style="padding: 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between;">
-                <h3 style="font-size: 16px; font-weight: 700;">Post Details</h3>
+            <div class="modal-header">
+                <h3 style="font-size: 18px; font-weight: 700;">Post Details</h3>
                 <button class="text-btn" onclick="closeModal()">✕</button>
             </div>
             <div class="modal-body">
@@ -285,7 +361,7 @@
                     <div style="display: flex; gap: 16px;">
                         <div class="field" style="flex: 1;">
                             <label class="label">Client</label>
-                            <select id="inpClient" class="input" style="background: white;"></select>
+                            <select id="inpClient" class="input" style="background: var(--input-bg);"></select>
                         </div>
                         <div class="field" style="flex: 1;">
                             <label class="label">Date</label>
@@ -308,7 +384,7 @@
                 </form>
             </div>
             <div class="modal-foot">
-                <button class="text-btn" style="color: var(--danger); margin-right: auto;" id="btnDel" onclick="delPost()">Delete</button>
+                <button class="text-btn" style="color: #EF4444; margin-right: auto;" id="btnDel" onclick="delPost()">Delete</button>
                 <button class="text-btn" onclick="closeModal()">Cancel</button>
                 <button class="btn btn-primary" onclick="document.getElementById('form').requestSubmit()">Save</button>
             </div>
@@ -316,21 +392,21 @@
     </div>
 
     <div class="overlay" id="cliModal">
-        <div class="modal" style="width: 420px;">
-            <div style="padding: 24px; border-bottom: 1px solid var(--border);">
-                <h3 style="font-size: 16px; font-weight: 700;">Manage Clients</h3>
+        <div class="modal">
+            <div class="modal-header">
+                <h3 style="font-size: 18px; font-weight: 700;">Manage Clients</h3>
+                <button class="text-btn" onclick="closeModal()">✕</button>
             </div>
-            <div class="modal-body" style="padding-top: 16px;">
-                <div style="display: flex; gap: 8px; margin-bottom: 24px;">
+            <div class="modal-body">
+                <div style="display: flex; gap: 12px; margin-bottom: 24px;">
                     <input type="text" id="newCliName" class="input" placeholder="New Client Name">
-                    <button class="btn btn-primary" style="padding: 0 16px;" onclick="addCli()">Add</button>
+                    <button class="btn btn-primary" onclick="addCli()">Add</button>
                 </div>
-                <div class="label">EXISTING CLIENTS (Click name to rename)</div>
-                <div id="cliList">
-                    </div>
+                <div class="label" style="margin-bottom:12px; border-bottom:1px solid var(--border); padding-bottom:8px;">Active Clients</div>
+                <div id="cliList"></div>
             </div>
             <div class="modal-foot">
-                <button class="text-btn" onclick="closeModal()">Close</button>
+                <button class="text-btn" onclick="closeModal()">Done</button>
             </div>
         </div>
     </div>
@@ -339,24 +415,62 @@
     <input type="file" id="file" hidden accept=".json" onchange="readFile(event)">
 
     <script>
-        // --- DATA ---
+        // --- DATA SAFETY ---
         let posts = [];
         let clients = [];
         let filter = 'All Clients';
         let editId = null;
         let cDate = new Date();
 
+        const MASTER_KEY_P = 'adscenes_master_posts';
+        const MASTER_KEY_C = 'adscenes_master_clients';
+
+        // LEGACY KEYS (The ones you might be using)
+        const LEGACY_KEYS = [
+            'as_posts_v9', 'as_posts_v8', 'as_posts_v7', 'as_posts_v6', 'as_posts_v5', 'as_posts_v4', 'as_posts_v3', 'as_posts_v2', 'as_posts'
+        ];
+        const LEGACY_CLIENTS = [
+            'as_clients_v9', 'as_clients_v8', 'as_clients_v7', 'as_clients_v6', 'as_clients_v5', 'as_clients_v4', 'as_clients_v3', 'as_clients_v2', 'as_clients'
+        ];
+
         window.onload = () => {
-            const lsP = localStorage.getItem('as_posts_v8');
-            const lsC = localStorage.getItem('as_clients_v8');
-            if(lsP) posts = JSON.parse(lsP);
-            if(lsC) clients = JSON.parse(lsC);
-            // Default: Empty clients list if none found
+            // 1. Try Load Master Data
+            let pData = localStorage.getItem(MASTER_KEY_P);
+            let cData = localStorage.getItem(MASTER_KEY_C);
+
+            // 2. If no master data, HUNT for legacy data
+            if (!pData) {
+                for (let key of LEGACY_KEYS) {
+                    const found = localStorage.getItem(key);
+                    if (found && found !== '[]') {
+                        pData = found;
+                        console.log("Restored data from legacy key:", key);
+                        break;
+                    }
+                }
+            }
+            if (!cData) {
+                for (let key of LEGACY_CLIENTS) {
+                    const found = localStorage.getItem(key);
+                    if (found && found !== '[]') {
+                        cData = found;
+                        break;
+                    }
+                }
+            }
+
+            // 3. Initialize
+            if (pData) posts = JSON.parse(pData);
+            if (cData) clients = JSON.parse(cData);
             
-            // Migrate old posts
+            // 4. Save to Master immediately (Migration Complete)
+            persist();
+            
+            // Clean up data
             posts = posts.map(p => ({...p, status: p.status || 'Draft'}));
-            
             render();
+            
+            // Global clicks
             document.onclick = (e) => {
                 if(!e.target.closest('.header-right')) {
                     document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('show'));
@@ -366,8 +480,8 @@
         };
 
         function persist() {
-            localStorage.setItem('as_posts_v8', JSON.stringify(posts));
-            localStorage.setItem('as_clients_v8', JSON.stringify(clients));
+            localStorage.setItem(MASTER_KEY_P, JSON.stringify(posts));
+            localStorage.setItem(MASTER_KEY_C, JSON.stringify(clients));
             render();
         }
 
@@ -376,7 +490,7 @@
             const visible = filter === 'All Clients' ? posts : posts.filter(p => p.client === filter);
             document.getElementById('currentClient').textContent = filter;
             
-            // Client Dropdown (Updated Layout)
+            // Client Dropdown
             const cliList = document.getElementById('clientDrop');
             cliList.innerHTML = `
                 <div class="drop-item ${filter==='All Clients'?'selected':''}" onclick="setFilter('All Clients')"><span>All Clients</span><span style="font-size:11px; opacity:0.6">${posts.length}</span></div>
@@ -389,23 +503,23 @@
             // Table
             const tbody = document.getElementById('tbody');
             if(visible.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 60px; color:var(--text-tertiary);">No posts found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 80px; color:var(--text-tertiary);">No posts found.</td></tr>`;
             } else {
                 tbody.innerHTML = visible.map((p) => `
                     <tr onclick="edit('${p.id}')" style="cursor:pointer">
                         <td>${getStatusPill(p)}</td>
-                        <td style="font-weight:500; color:var(--text-primary)">${esc(p.title)}</td>
+                        <td><div class="text-truncate" style="font-weight:500; color:var(--text-primary)">${esc(p.title)}</div></td>
                         <td><span class="pill">${esc(p.client)}</span></td>
                         <td>
-                            <div style="display:flex; align-items:center;">
-                                <span style="margin-right:8px;">${esc(p.caption).substring(0, 30)}${p.caption.length>30?'...':''}</span>
-                                ${p.caption ? `<div class="action-icon" onclick="copy(event, '${esc(p.caption)}')" title="Copy Caption">📋</div>` : ''}
+                            <div class="content-cell">
+                                <span class="text-truncate" style="max-width:200px;">${esc(p.caption) || '<span style="opacity:0.3">Empty</span>'}</span>
+                                ${p.caption ? `<div class="copy-btn" onclick="copy(event, '${esc(p.caption)}')" title="Copy"><svg class="icon-svg" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></div>` : ''}
                             </div>
                         </td>
                         <td>
-                            <div style="display:flex; align-items:center;">
-                                <span style="color:var(--text-secondary); margin-right:8px;">${p.alt ? esc(p.alt).substring(0, 20)+'...' : '—'}</span>
-                                ${p.alt ? `<div class="action-icon" onclick="copy(event, '${esc(p.alt)}')" title="Copy Alt Text">📋</div>` : ''}
+                            <div class="content-cell">
+                                <span class="text-truncate" style="max-width:150px; color:var(--text-secondary);">${p.alt ? esc(p.alt) : '—'}</span>
+                                ${p.alt ? `<div class="copy-btn" onclick="copy(event, '${esc(p.alt)}')" title="Copy"><svg class="icon-svg" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></div>` : ''}
                             </div>
                         </td>
                         <td>${p.link ? `<a href="${p.link}" target="_blank" onclick="event.stopPropagation()" class="link-btn">Asset ↗</a>` : '<span style="color:#E2E8F0">—</span>'}</td>
@@ -422,8 +536,9 @@
                         <span class="pill">${esc(p.client)}</span>
                         ${getStatusPill(p)}
                     </div>
-                    <div class="card-title">${esc(p.title)}</div>
-                    <div style="font-size:13px; color:var(--text-secondary); margin-bottom:16px; line-height:1.5;">${esc(p.caption).substring(0,80) || 'No caption'}</div>
+                    <div class="card-title text-truncate">${esc(p.title)}</div>
+                    <div class="text-truncate" style="font-size:13px; color:var(--text-secondary); margin-bottom:6px;">${esc(p.caption) || 'No caption'}</div>
+                    <div class="text-truncate" style="font-size:12px; color:var(--text-tertiary); margin-bottom:16px;">ALT: ${p.alt ? esc(p.alt) : '—'}</div>
                     <div style="margin-top:auto; display:flex; justify-content:space-between; align-items:center;">
                          <span style="font-size:12px; color:var(--text-tertiary);">${formatDate(p.date)}</span>
                          ${p.link ? `<a href="${p.link}" target="_blank" onclick="event.stopPropagation()" class="link-btn" style="padding:4px 8px; font-size:11px;">View Asset</a>` : ''}
@@ -442,6 +557,8 @@
             const firstDay = new Date(y, m, 1).getDay();
             const daysInM = new Date(y, m + 1, 0).getDate();
             const today = new Date().toISOString().split('T')[0];
+            
+            // Generate Grid
             let html = `<div class="cal-day-label">Sun</div><div class="cal-day-label">Mon</div><div class="cal-day-label">Tue</div><div class="cal-day-label">Wed</div><div class="cal-day-label">Thu</div><div class="cal-day-label">Fri</div><div class="cal-day-label">Sat</div>`;
             for(let i=0; i<firstDay; i++) html += `<div class="cal-cell" style="background:#F8FAFC"></div>`;
             for(let d=1; d<=daysInM; d++) {
@@ -458,33 +575,12 @@
             const cls = p.status === 'Posted' ? 'status-posted' : (p.status === 'Ready' ? 'status-ready' : 'status-draft');
             return `<span class="status-pill ${cls}" onclick="cycleStatus(event, '${p.id}')">${p.status}</span>`;
         }
+        function cycleStatus(e, id) { e.stopPropagation(); const idx = posts.findIndex(p => p.id === id); const s = posts[idx].status; posts[idx].status = s === 'Draft' ? 'Ready' : (s === 'Ready' ? 'Posted' : 'Draft'); persist(); }
+        function copy(e, text) { e.stopPropagation(); navigator.clipboard.writeText(text); toast('Copied to Clipboard'); }
+        function updateCount() { const len = document.getElementById('inpCaption').value.length; document.getElementById('charCount').textContent = len + ' chars'; }
         
-        function cycleStatus(e, id) {
-            e.stopPropagation();
-            const idx = posts.findIndex(p => p.id === id);
-            const s = posts[idx].status;
-            posts[idx].status = s === 'Draft' ? 'Ready' : (s === 'Ready' ? 'Posted' : 'Draft');
-            persist();
-        }
-
-        function copy(e, text) {
-            e.stopPropagation();
-            navigator.clipboard.writeText(text);
-            toast('Copied to Clipboard!');
-        }
-        
-        function updateCount() {
-            const len = document.getElementById('inpCaption').value.length;
-            document.getElementById('charCount').textContent = len + ' chars';
-        }
-
-        // --- CORE ACTIONS ---
-        function setView(v, btn) {
-            document.querySelectorAll('.view-container').forEach(e => e.classList.remove('active'));
-            document.getElementById('v-'+v).classList.add('active');
-            document.querySelectorAll('.switch-opt').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
+        // --- CORE ---
+        function setView(v, btn) { document.querySelectorAll('.view-container').forEach(e => e.classList.remove('active')); document.getElementById('v-'+v).classList.add('active'); document.querySelectorAll('.switch-opt').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
         function toggleDrop(e, id) { e.stopPropagation(); document.getElementById(id).classList.toggle('show'); document.getElementById(e.currentTarget.id).classList.toggle('active'); }
         function setFilter(c) { filter = c; render(); }
 
@@ -494,8 +590,7 @@
             const sel = document.getElementById('inpClient'); sel.innerHTML = clients.map(c => `<option>${c}</option>`).join('');
             if(filter !== 'All Clients') sel.value = filter;
             document.getElementById('inpDate').value = dateStr || new Date().toISOString().split('T')[0];
-            updateCount();
-            document.getElementById('postModal').classList.add('active');
+            updateCount(); document.getElementById('postModal').classList.add('active');
         }
         function edit(id) {
             const p = posts.find(x => x.id === id); if(!p) return; editId = id;
@@ -508,75 +603,42 @@
         }
         function save(e) {
             e.preventDefault();
-            const p = {
-                id: editId || 'post_' + Date.now(),
-                title: document.getElementById('inpTitle').value,
-                client: document.getElementById('inpClient').value,
-                date: document.getElementById('inpDate').value,
-                link: document.getElementById('inpLink').value,
-                caption: document.getElementById('inpCaption').value,
-                alt: document.getElementById('inpAlt').value,
-                status: document.getElementById('inpStatus').value || 'Draft'
-            };
-            if(editId) { const idx = posts.findIndex(x => x.id === editId); posts[idx] = p; toast('Post Updated'); } 
-            else { posts.push(p); toast('Post Created'); }
+            const p = { id: editId || 'post_' + Date.now(), title: document.getElementById('inpTitle').value, client: document.getElementById('inpClient').value, date: document.getElementById('inpDate').value, link: document.getElementById('inpLink').value, caption: document.getElementById('inpCaption').value, alt: document.getElementById('inpAlt').value, status: document.getElementById('inpStatus').value || 'Draft' };
+            if(editId) { const idx = posts.findIndex(x => x.id === editId); posts[idx] = p; toast('Post Updated'); } else { posts.push(p); toast('Post Created'); }
             closeModal(); persist();
         }
         function delPost() { if(confirm('Delete?')) { posts = posts.filter(x => x.id !== editId); closeModal(); persist(); toast('Deleted'); } }
         function closeModal() { document.querySelectorAll('.overlay').forEach(o => o.classList.remove('active')); }
 
-        // --- CLIENT MANAGER & RENAME ---
-        function openCliManager() {
-            document.getElementById('clientDrop').classList.remove('show');
-            document.getElementById('cliModal').classList.add('active');
-            renderCliList();
-            setTimeout(() => document.getElementById('newCliName').focus(), 100);
-        }
-
+        // --- CLIENT MANAGER ---
+        function openCliManager() { document.getElementById('clientDrop').classList.remove('show'); document.getElementById('cliModal').classList.add('active'); renderCliList(); setTimeout(() => document.getElementById('newCliName').focus(), 100); }
         function renderCliList() {
             const list = document.getElementById('cliList');
-            if(clients.length === 0) {
-                list.innerHTML = '<div style="color:var(--text-tertiary); text-align:center; padding:20px;">No clients yet.</div>';
-                return;
-            }
+            if(clients.length === 0) { list.innerHTML = '<div style="color:var(--text-tertiary); text-align:center; padding:20px;">No clients yet.</div>'; return; }
             list.innerHTML = clients.map((c, i) => `
                 <div class="cli-row">
-                    <input type="text" class="cli-name-input" value="${c}" onchange="renameCli(${i}, this.value)" onfocus="this.select()">
-                    <span class="cli-action" onclick="copy(event, '${c}')">Copy</span>
+                    <div class="cli-input-wrap"><input type="text" class="input" style="padding:8px 12px; background:transparent;" value="${c}" onchange="renameCli(${i}, this.value)"></div>
+                    <div class="cli-btn danger" onclick="delCli(${i})" title="Delete"><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></div>
                 </div>
             `).join('');
         }
-
         function addCli() {
             const n = document.getElementById('newCliName').value.trim();
-            if(n && !clients.includes(n)) {
-                clients.push(n); setFilter(n); persist(); toast('Client Added');
-                document.getElementById('newCliName').value = '';
-                renderCliList();
-            }
+            if(n && !clients.includes(n)) { clients.push(n); setFilter(n); persist(); toast('Client Added'); document.getElementById('newCliName').value = ''; renderCliList(); }
         }
-
         function renameCli(idx, newName) {
-            newName = newName.trim();
-            const oldName = clients[idx];
-            if(!newName || newName === oldName) { renderCliList(); return; } // Reset if empty/same
-            if(clients.includes(newName)) { alert('Client name already exists!'); renderCliList(); return; }
-            
-            // Rename logic
+            newName = newName.trim(); const oldName = clients[idx];
+            if(!newName || newName === oldName || clients.includes(newName)) { renderCliList(); return; }
             clients[idx] = newName;
-            
-            // Update all posts
-            let count = 0;
-            posts.forEach(p => {
-                if(p.client === oldName) { p.client = newName; count++; }
-            });
-            
-            // Update filter if active
+            posts.forEach(p => { if(p.client === oldName) p.client = newName; });
             if(filter === oldName) filter = newName;
-            
-            persist();
-            renderCliList(); // re-render to ensure state is synced
-            toast(`Renamed & updated ${count} posts`);
+            persist(); renderCliList(); toast('Renamed');
+        }
+        function delCli(idx) {
+            const name = clients[idx];
+            const hasPosts = posts.some(p => p.client === name);
+            if(hasPosts) { alert(`Cannot delete "${name}": It has active posts. Please reassign or delete them first.`); return; }
+            if(confirm(`Delete client "${name}"?`)) { clients.splice(idx, 1); if(filter === name) filter = 'All Clients'; persist(); renderCliList(); toast('Client Deleted'); }
         }
 
         // --- UTILS ---
