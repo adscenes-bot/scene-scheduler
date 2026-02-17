@@ -131,11 +131,10 @@
         .status-ready { background: var(--status-ready-bg); color: var(--status-ready-text); }
         .status-posted { background: var(--status-posted-bg); color: var(--status-posted-text); }
         
-        /* Action Buttons (Copy/Link) */
+        /* Action Buttons */
         .action-icon { width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; color: var(--text-tertiary); cursor: pointer; transition: all 0.2s; margin-left: 4px; }
         .action-icon:hover { background: #F1F5F9; color: var(--brand); }
 
-        /* Link Button */
         .link-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--text-secondary); padding: 6px 10px; background: #F8FAFC; border: 1px solid var(--border); border-radius: 6px; text-decoration: none; transition: all 0.2s; }
         .link-btn:hover { border-color: #CBD5E1; color: var(--text-primary); }
 
@@ -167,6 +166,14 @@
         .input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); font-family: inherit; font-size: 14px; color: var(--text-primary); transition: all 0.2s; }
         .input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
         .modal-foot { padding: 20px 32px; background: #F8FAFC; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px; }
+
+        /* Client Manager Styles */
+        .cli-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+        .cli-row:last-child { border-bottom: none; }
+        .cli-name-input { border: none; background: transparent; font-family: inherit; font-size: 14px; font-weight: 500; color: var(--text-primary); flex: 1; margin-right: 12px; padding: 4px; border-radius: 4px; }
+        .cli-name-input:focus { background: #F1F5F9; outline: none; }
+        .cli-action { font-size: 12px; color: var(--brand); cursor: pointer; font-weight: 600; }
+        .cli-action:hover { text-decoration: underline; }
 
         /* Toast */
         .toast { position: fixed; bottom: 32px; left: 50%; transform: translate(-50%, 20px); background: #1E293B; color: white; padding: 10px 24px; border-radius: 50px; font-size: 13px; font-weight: 500; opacity: 0; pointer-events: none; box-shadow: var(--shadow-float); transition: all 0.3s var(--ease); z-index: 1000; }
@@ -309,14 +316,21 @@
     </div>
 
     <div class="overlay" id="cliModal">
-        <div class="modal" style="width: 380px;">
-            <div class="modal-body">
-                <h3 style="margin-bottom: 16px; font-size: 16px;">Add New Client</h3>
-                <input type="text" id="newCliName" class="input" placeholder="Client Name" autofocus>
+        <div class="modal" style="width: 420px;">
+            <div style="padding: 24px; border-bottom: 1px solid var(--border);">
+                <h3 style="font-size: 16px; font-weight: 700;">Manage Clients</h3>
+            </div>
+            <div class="modal-body" style="padding-top: 16px;">
+                <div style="display: flex; gap: 8px; margin-bottom: 24px;">
+                    <input type="text" id="newCliName" class="input" placeholder="New Client Name">
+                    <button class="btn btn-primary" style="padding: 0 16px;" onclick="addCli()">Add</button>
+                </div>
+                <div class="label">EXISTING CLIENTS (Click name to rename)</div>
+                <div id="cliList">
+                    </div>
             </div>
             <div class="modal-foot">
-                <button class="text-btn" onclick="document.getElementById('cliModal').classList.remove('active')">Cancel</button>
-                <button class="btn btn-primary" onclick="addCli()">Add Client</button>
+                <button class="text-btn" onclick="closeModal()">Close</button>
             </div>
         </div>
     </div>
@@ -333,13 +347,13 @@
         let cDate = new Date();
 
         window.onload = () => {
-            const lsP = localStorage.getItem('as_posts_v7');
-            const lsC = localStorage.getItem('as_clients_v7');
+            const lsP = localStorage.getItem('as_posts_v8');
+            const lsC = localStorage.getItem('as_clients_v8');
             if(lsP) posts = JSON.parse(lsP);
             if(lsC) clients = JSON.parse(lsC);
-            // NOTE: Clients now starts empty by default
+            // Default: Empty clients list if none found
             
-            // Migrate old posts to have status
+            // Migrate old posts
             posts = posts.map(p => ({...p, status: p.status || 'Draft'}));
             
             render();
@@ -352,8 +366,8 @@
         };
 
         function persist() {
-            localStorage.setItem('as_posts_v7', JSON.stringify(posts));
-            localStorage.setItem('as_clients_v7', JSON.stringify(clients));
+            localStorage.setItem('as_posts_v8', JSON.stringify(posts));
+            localStorage.setItem('as_clients_v8', JSON.stringify(clients));
             render();
         }
 
@@ -362,14 +376,14 @@
             const visible = filter === 'All Clients' ? posts : posts.filter(p => p.client === filter);
             document.getElementById('currentClient').textContent = filter;
             
-            // Client Drop
+            // Client Dropdown (Updated Layout)
             const cliList = document.getElementById('clientDrop');
             cliList.innerHTML = `
                 <div class="drop-item ${filter==='All Clients'?'selected':''}" onclick="setFilter('All Clients')"><span>All Clients</span><span style="font-size:11px; opacity:0.6">${posts.length}</span></div>
                 <div class="drop-divider"></div>
                 ${clients.map(c => `<div class="drop-item ${filter===c?'selected':''}" onclick="setFilter('${c}')"><span>${c}</span><span style="font-size:11px; opacity:0.6">${posts.filter(p=>p.client===c).length}</span></div>`).join('')}
                 <div class="drop-divider"></div>
-                <div class="drop-item" style="color:var(--brand); font-weight:600;" onclick="openCli()">+ Add Client</div>
+                <div class="drop-item" style="color:var(--brand); font-weight:600;" onclick="openCliManager()">Manage Clients</div>
             `;
 
             // Table
@@ -511,9 +525,61 @@
         function delPost() { if(confirm('Delete?')) { posts = posts.filter(x => x.id !== editId); closeModal(); persist(); toast('Deleted'); } }
         function closeModal() { document.querySelectorAll('.overlay').forEach(o => o.classList.remove('active')); }
 
+        // --- CLIENT MANAGER & RENAME ---
+        function openCliManager() {
+            document.getElementById('clientDrop').classList.remove('show');
+            document.getElementById('cliModal').classList.add('active');
+            renderCliList();
+            setTimeout(() => document.getElementById('newCliName').focus(), 100);
+        }
+
+        function renderCliList() {
+            const list = document.getElementById('cliList');
+            if(clients.length === 0) {
+                list.innerHTML = '<div style="color:var(--text-tertiary); text-align:center; padding:20px;">No clients yet.</div>';
+                return;
+            }
+            list.innerHTML = clients.map((c, i) => `
+                <div class="cli-row">
+                    <input type="text" class="cli-name-input" value="${c}" onchange="renameCli(${i}, this.value)" onfocus="this.select()">
+                    <span class="cli-action" onclick="copy(event, '${c}')">Copy</span>
+                </div>
+            `).join('');
+        }
+
+        function addCli() {
+            const n = document.getElementById('newCliName').value.trim();
+            if(n && !clients.includes(n)) {
+                clients.push(n); setFilter(n); persist(); toast('Client Added');
+                document.getElementById('newCliName').value = '';
+                renderCliList();
+            }
+        }
+
+        function renameCli(idx, newName) {
+            newName = newName.trim();
+            const oldName = clients[idx];
+            if(!newName || newName === oldName) { renderCliList(); return; } // Reset if empty/same
+            if(clients.includes(newName)) { alert('Client name already exists!'); renderCliList(); return; }
+            
+            // Rename logic
+            clients[idx] = newName;
+            
+            // Update all posts
+            let count = 0;
+            posts.forEach(p => {
+                if(p.client === oldName) { p.client = newName; count++; }
+            });
+            
+            // Update filter if active
+            if(filter === oldName) filter = newName;
+            
+            persist();
+            renderCliList(); // re-render to ensure state is synced
+            toast(`Renamed & updated ${count} posts`);
+        }
+
         // --- UTILS ---
-        function openCli() { document.getElementById('cliModal').classList.add('active'); setTimeout(() => document.getElementById('newCliName').focus(), 100); }
-        function addCli() { const n = document.getElementById('newCliName').value.trim(); if(n && !clients.includes(n)) { clients.push(n); setFilter(n); persist(); toast('Client Added'); } closeModal(); }
         function exp() { const blob = new Blob([JSON.stringify({posts, clients}, null, 2)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'adscenes-backup.json'; a.click(); }
         function imp() { document.getElementById('file').click(); }
         function readFile(e) { const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = (ev) => { try { const d = JSON.parse(ev.target.result); if(d.posts) posts = d.posts.map(p => ({...p, status:p.status||'Draft'})); if(d.clients) clients = d.clients; persist(); toast('Imported'); } catch(x) { alert('Invalid File'); } }; r.readAsText(f); e.target.value = ''; }
