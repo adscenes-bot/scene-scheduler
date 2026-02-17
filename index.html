@@ -147,7 +147,14 @@
         .status-ready { background: var(--status-ready-bg); color: var(--status-ready-text); }
         .status-posted { background: var(--status-posted-bg); color: var(--status-posted-text); }
 
-        .link-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--text-secondary); padding: 6px 10px; background: #F8FAFC; border: 1px solid var(--border); border-radius: 6px; text-decoration: none; transition: all 0.2s; }
+        /* FIX: Prevent Asset Button Wrapping */
+        .link-btn { 
+            display: inline-flex; align-items: center; gap: 6px; 
+            font-size: 12px; font-weight: 500; color: var(--text-secondary); 
+            padding: 6px 10px; background: #F8FAFC; border: 1px solid var(--border); 
+            border-radius: 6px; text-decoration: none; transition: all 0.2s;
+            white-space: nowrap; /* Forces one line */
+        }
         .link-btn:hover { border-color: #CBD5E1; color: var(--text-primary); }
 
         /* CARDS */
@@ -163,12 +170,14 @@
         }
         .cal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         
-        /* The Fixed Layout: Full Border */
+        /* LATTICE LAYOUT: Ensure equal boxes */
         .cal-grid {
             display: grid; 
             grid-template-columns: repeat(7, 1fr); 
             width: 100%;
-            border: 1px solid var(--border); /* Full container border */
+            /* Container has Top and Left borders */
+            border-top: 1px solid var(--border);
+            border-left: 1px solid var(--border);
             border-radius: 12px;
             overflow: hidden;
         }
@@ -176,24 +185,27 @@
         .cal-day-label {
             background: #F8FAFC; padding: 12px; text-align: center;
             font-size: 11px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;
+            /* Cells have Right and Bottom borders */
             border-right: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
         }
-        .cal-day-label:nth-child(7n) { border-right: none; } /* NO BORDER ON LAST COLUMN HEADER */
         
         .cal-cell {
             background: white; min-height: 140px; padding: 10px; cursor: pointer;
+            /* Cells have Right and Bottom borders */
             border-right: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
             transition: background 0.1s;
+            display: flex; flex-direction: column; /* Better sizing */
+            min-width: 0; /* Prevents overflow */
         }
-        .cal-cell:nth-child(7n) { border-right: none; } /* NO BORDER ON LAST COLUMN CELL */
         .cal-cell:hover { background: #F9FAFB; }
         
         .cal-num { 
             width: 28px; height: 28px; border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; 
             font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; 
+            flex-shrink: 0;
         }
         .cal-cell.today .cal-num { background: var(--brand); color: white; box-shadow: 0 4px 10px rgba(37,99,235,0.3); }
         .event-pill { 
@@ -201,6 +213,7 @@
             font-size: 11px; font-weight: 600; margin-bottom: 4px; 
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
             border-left: 3px solid var(--brand); 
+            width: 100%; /* Ensure pill fits in cell */
         }
 
         /* --- MODALS (Finesse) --- */
@@ -319,8 +332,7 @@
                                 <th style="width: 15%;">Client</th>
                                 <th>Caption</th>
                                 <th>Alt Text</th>
-                                <th style="width: 100px;">Asset</th>
-                                <th style="width: 120px;">Date</th>
+                                <th style="width: 120px;">Asset</th> <th style="width: 120px;">Date</th>
                             </tr>
                         </thead>
                         <tbody id="tbody"></tbody>
