@@ -3,322 +3,305 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>adscenes</title>
+    <title>AdScenes Studio</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         
         * { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
 
         :root {
-            /* --- THEME: "Studio Grade" --- */
-            --bg-body: #F1F5F9;         
+            /* --- THEME: "Cupertino Glass" --- */
+            --bg-body: #F9FAFB;         
             --bg-surface: #FFFFFF;
+            --bg-subtle: #F3F4F6;
             
-            --text-primary: #0F172A;    
-            --text-secondary: #64748B;  
-            --text-tertiary: #94A3B8;   
+            --text-primary: #111827;    
+            --text-secondary: #6B7280;  
+            --text-tertiary: #9CA3AF;   
             
-            --brand: #2563EB;           
+            --brand: #007AFF; /* Apple Blue */
+            --brand-hover: #0062CC;   
             --brand-subtle: #EFF6FF;
-            --brand-hover: #1D4ED8;   
             
-            --border: #E2E8F0;
-            --input-bg: #F8FAFC;
+            --border: #E5E7EB;
+            --border-hover: #D1D5DB;
             
-            /* Status Colors */
-            --status-draft-bg: #F1F5F9; --status-draft-text: #64748B;
-            --status-ready-bg: #F0FDF4; --status-ready-text: #15803D;
-            --status-posted-bg: #EFF6FF; --status-posted-text: #1E40AF;
+            /* Status Dots */
+            --dot-draft: #9CA3AF;
+            --dot-ready: #10B981;
+            --dot-posted: #3B82F6;
 
             --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             --shadow-float: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
             --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             
-            --ease: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
         html { scrollbar-gutter: stable; }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-body);
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-y: scroll;
         }
 
         .container-width { max-width: 1400px; margin: 0 auto; width: 100%; padding: 0 40px; }
 
-        /* --- HEADER --- */
+        /* --- HEADER (Glassmorphism) --- */
         .header {
             height: 72px;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
             display: flex; align-items: center;
             position: sticky; top: 0; z-index: 100;
         }
 
         .header-content { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .logo { font-weight: 800; font-size: 22px; letter-spacing: -0.04em; color: var(--text-primary); cursor: pointer; user-select: none; }
-        .logo:hover { color: var(--brand); }
+        .logo { font-weight: 700; font-size: 18px; letter-spacing: -0.02em; color: var(--text-primary); cursor: pointer; user-select: none; display: flex; align-items: center; gap: 8px; }
+        .logo span { color: var(--text-tertiary); font-weight: 400; }
 
-        .header-right { display: flex; align-items: center; gap: 16px; }
+        .header-right { display: flex; align-items: center; gap: 12px; }
 
-        /* Buttons & Icons */
-        .ctx-btn {
-            height: 40px; padding: 0 16px; border-radius: 10px;
-            background: transparent; border: 1px solid transparent;
-            color: var(--text-secondary); font-size: 13px; font-weight: 500;
-            cursor: pointer; display: flex; align-items: center; gap: 8px;
+        /* Buttons & Interactions */
+        .btn-icon {
+            width: 36px; height: 36px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-secondary); cursor: pointer; transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .btn-icon:hover { background: rgba(0,0,0,0.04); color: var(--text-primary); }
+        .btn-icon.active { background: var(--bg-subtle); color: var(--text-primary); }
+
+        .btn-primary {
+            height: 36px; padding: 0 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--text-primary); color: white; /* Black button like Vercel/Apple */
+            border: none; cursor: pointer; transition: all 0.2s var(--ease);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        
+        .icon-svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; }
+
+        /* --- MAIN LIST VIEW --- */
+        .main-wrapper { padding-top: 40px; padding-bottom: 80px; flex: 1; }
+        
+        /* Toolbar */
+        .toolbar { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; }
+        
+        .view-toggle {
+            background: var(--bg-subtle); padding: 3px; border-radius: 10px; display: inline-flex;
+        }
+        .toggle-opt {
+            padding: 6px 14px; border-radius: 7px; font-size: 12px; font-weight: 600; 
+            color: var(--text-secondary); cursor: pointer; border: none; background: transparent; 
             transition: all 0.2s;
         }
-        .ctx-btn:hover { background: white; border-color: var(--border); color: var(--text-primary); box-shadow: var(--shadow-sm); }
-        .ctx-btn.active { background: var(--brand-subtle); color: var(--brand); border-color: rgba(37,99,235,0.2); font-weight: 600; }
+        .toggle-opt:hover { color: var(--text-primary); }
+        .toggle-opt.active { background: white; color: var(--text-primary); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
 
-        .btn {
-            height: 40px; padding: 0 20px; border-radius: 12px; font-size: 13px; font-weight: 600;
-            display: inline-flex; align-items: center; gap: 8px;
-            cursor: pointer; transition: all 0.2s var(--ease); border: none;
-        }
-        .btn-primary { background: var(--brand); color: white; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2); }
-        .btn-primary:hover { background: var(--brand-hover); transform: translateY(-1px); }
-
-        .icon-svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; }
-        .icon-dots { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; fill: none; }
-
-        /* Dropdowns */
-        .dropdown {
-            position: absolute; top: calc(100% + 6px); right: 0;
-            background: var(--bg-surface); border: 1px solid var(--border);
-            border-radius: 14px; box-shadow: var(--shadow-float);
-            min-width: 240px; padding: 6px; display: none; z-index: 200;
-            animation: slideDown 0.15s var(--ease); transform-origin: top right;
-        }
-        .dropdown.show { display: block; }
-        @keyframes slideDown { from { opacity: 0; transform: scale(0.98) translateY(-4px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-        
-        .drop-item { padding: 12px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--text-primary); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-        .drop-item:hover { background: var(--bg-body); }
-        .drop-item.selected { color: var(--brand); background: var(--brand-subtle); }
-        .drop-divider { height: 1px; background: var(--border); margin: 6px 0; }
-        .drop-danger { color: #EF4444; } .drop-danger:hover { background: #FEF2F2; }
-
-        /* --- MAIN --- */
-        .main-wrapper { padding-top: 40px; padding-bottom: 60px; flex: 1; }
-        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
-
-        .switcher { background: white; border: 1px solid var(--border); padding: 4px; border-radius: 12px; display: flex; box-shadow: var(--shadow-sm); }
-        .switch-opt { padding: 6px 18px; border-radius: 8px; font-size: 12px; font-weight: 600; color: var(--text-secondary); cursor: pointer; border: none; background: transparent; transition: all 0.2s; }
-        .switch-opt:hover { color: var(--text-primary); }
-        .switch-opt.active { background: var(--bg-body); color: var(--text-primary); box-shadow: var(--shadow-sm); }
-
-        /* --- VIEWS --- */
-        .view-container { display: none; animation: fadeIn 0.3s var(--ease); }
+        /* --- THE TABLE (Apple List Style) --- */
+        .view-container { display: none; animation: fadeIn 0.4s var(--ease); }
         .view-container.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* TABLE */
-        .table-frame { background: var(--bg-surface); border-radius: 18px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); overflow: hidden; }
+        .table-frame { 
+            background: var(--bg-surface); 
+            border-radius: 16px; 
+            box-shadow: var(--shadow-sm); 
+            border: 1px solid var(--border);
+            overflow: hidden; 
+        }
+        
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        th { text-align: left; padding: 18px 24px; font-size: 11px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); background: #FAFAFA; }
-        td { padding: 20px 24px; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: middle; color: var(--text-secondary); }
-        tr:last-child td { border-bottom: none; }
-        tr:hover td { background: #F8FAFC; color: var(--text-primary); }
         
-        /* Truncation & Icons */
-        .text-truncate {
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; max-width: 100%;
-        }
-        .content-cell { display: flex; align-items: center; justify-content: space-between; gap: 12px; max-width: 300px; }
-        .copy-btn {
-            opacity: 0; transition: opacity 0.2s; cursor: pointer; color: var(--text-tertiary);
-            flex-shrink: 0; display: flex; align-items: center;
-        }
-        tr:hover .copy-btn { opacity: 1; }
-        .copy-btn:hover { color: var(--brand); }
-
-        .pill { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; background: var(--brand-subtle); color: var(--brand); }
-        
-        .status-pill { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; user-select: none; transition: all 0.2s; }
-        .status-draft { background: var(--status-draft-bg); color: var(--status-draft-text); }
-        .status-ready { background: var(--status-ready-bg); color: var(--status-ready-text); }
-        .status-posted { background: var(--status-posted-bg); color: var(--status-posted-text); }
-
-        /* FIX: Prevent Asset Button Wrapping */
-        .link-btn { 
-            display: inline-flex; align-items: center; gap: 6px; 
-            font-size: 12px; font-weight: 500; color: var(--text-secondary); 
-            padding: 6px 10px; background: #F8FAFC; border: 1px solid var(--border); 
-            border-radius: 6px; text-decoration: none; transition: all 0.2s;
-            white-space: nowrap; /* Forces one line */
-        }
-        .link-btn:hover { border-color: #CBD5E1; color: var(--text-primary); }
-
-        /* CARDS */
-        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
-        .card { background: var(--bg-surface); border-radius: 18px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); padding: 24px; transition: all 0.2s var(--ease); cursor: pointer; display: flex; flex-direction: column; }
-        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-float); border-color: #CBD5E1; }
-        .card-title { font-weight: 600; color: var(--text-primary); margin-bottom: 8px; font-size: 15px; }
-
-        /* CALENDAR - THE FIX */
-        .cal-frame {
-            background: var(--bg-surface); border-radius: 20px; border: 1px solid var(--border);
-            box-shadow: var(--shadow-sm); padding: 24px;
-        }
-        .cal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-        
-        /* LATTICE LAYOUT: Ensure equal boxes */
-        .cal-grid {
-            display: grid; 
-            grid-template-columns: repeat(7, 1fr); 
-            width: 100%;
-            /* Container has Top and Left borders */
-            border-top: 1px solid var(--border);
-            border-left: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
+        th { 
+            text-align: left; padding: 16px 24px; 
+            font-size: 11px; font-weight: 600; color: var(--text-tertiary); 
+            text-transform: uppercase; letter-spacing: 0.05em; 
+            border-bottom: 1px solid var(--border); 
+            background: #FAFAFA;
         }
         
-        .cal-day-label {
-            background: #F8FAFC; padding: 12px; text-align: center;
-            font-size: 11px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase;
-            /* Cells have Right and Bottom borders */
-            border-right: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .cal-cell {
-            background: white; min-height: 140px; padding: 10px; cursor: pointer;
-            /* Cells have Right and Bottom borders */
-            border-right: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
+        td { 
+            padding: 16px 24px; 
+            border-bottom: 1px solid var(--border); 
+            font-size: 14px; vertical-align: middle; 
+            color: var(--text-secondary); 
             transition: background 0.1s;
-            display: flex; flex-direction: column; /* Better sizing */
-            min-width: 0; /* Prevents overflow */
         }
-        .cal-cell:hover { background: #F9FAFB; }
         
-        .cal-num { 
-            width: 28px; height: 28px; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; 
-            flex-shrink: 0;
-        }
-        .cal-cell.today .cal-num { background: var(--brand); color: white; box-shadow: 0 4px 10px rgba(37,99,235,0.3); }
-        .event-pill { 
-            background: var(--brand-subtle); color: var(--brand); padding: 4px 8px; border-radius: 6px; 
-            font-size: 11px; font-weight: 600; margin-bottom: 4px; 
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
-            border-left: 3px solid var(--brand); 
-            width: 100%; /* Ensure pill fits in cell */
-        }
+        tr:last-child td { border-bottom: none; }
+        
+        /* Row Hover Effect */
+        tr { transition: background 0.1s; cursor: pointer; }
+        tr:hover td { background: #F9FAFB; }
+        tr:hover .action-group { opacity: 1; } /* Reveal actions on hover */
 
-        /* --- MODALS (Finesse) --- */
+        /* Typography */
+        .cell-title { font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+        .cell-sub { font-size: 12px; color: var(--text-tertiary); }
+        .text-truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+
+        /* Status Dot */
+        .status-badge { 
+            display: inline-flex; align-items: center; gap: 6px; 
+            padding: 4px 8px; border-radius: 6px; 
+            font-size: 12px; font-weight: 500; color: var(--text-primary);
+            background: white; border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+        .status-badge:hover { border-color: var(--text-tertiary); background: #F9FAFB; }
+        .dot { width: 6px; height: 6px; border-radius: 50%; }
+        
+        /* Asset Button */
+        .asset-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 12px; font-weight: 500; color: var(--brand);
+            background: var(--brand-subtle); padding: 6px 12px; border-radius: 20px;
+            text-decoration: none; transition: all 0.2s;
+        }
+        .asset-btn:hover { background: #DBEAFE; }
+
+        /* Hover Actions */
+        .action-group {
+            display: flex; gap: 8px; justify-content: flex-end;
+            opacity: 0; transition: opacity 0.2s; /* Hidden by default */
+        }
+        .action-icon {
+            color: var(--text-tertiary); padding: 4px; border-radius: 4px;
+        }
+        .action-icon:hover { color: var(--text-primary); background: rgba(0,0,0,0.05); }
+
+        /* --- THE NEW MODAL (Apple Style) --- */
         .overlay {
-            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); 
-            backdrop-filter: blur(8px);
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.2); 
+            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
             z-index: 500; display: none; align-items: center; justify-content: center; 
             opacity: 0; transition: opacity 0.2s;
         }
         .overlay.active { display: flex; opacity: 1; }
         
         .modal {
-            background: var(--bg-surface); width: 540px; border-radius: 24px;
+            background: var(--bg-surface); width: 480px; border-radius: 20px;
             box-shadow: var(--shadow-modal); 
-            transform: scale(0.96); transition: transform 0.2s var(--ease); overflow: hidden;
-            display: flex; flex-direction: column;
-            max-height: 90vh;
+            transform: scale(0.95) translateY(10px); transition: transform 0.3s var(--ease); 
+            display: flex; flex-direction: column; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.5);
         }
-        .overlay.active .modal { transform: scale(1); }
+        .overlay.active .modal { transform: scale(1) translateY(0); }
         
-        .modal-header { padding: 24px 32px; border-bottom: 1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
-        .modal-body { padding: 32px; overflow-y: auto; }
-        .modal-foot { padding: 24px 32px; background: #F8FAFC; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px; }
+        .modal-body { padding: 32px 32px 16px 32px; }
+        .modal-foot { padding: 24px 32px 32px 32px; display: flex; justify-content: space-between; align-items: center; }
 
-        .field { margin-bottom: 24px; }
-        .label { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
-        
-        .input {
-            width: 100%; padding: 14px 16px; border-radius: 12px; 
-            border: 1px solid transparent; background: var(--input-bg);
+        /* Inputs - The "Apple Settings" Look */
+        .field-group { margin-bottom: 20px; }
+        .input-label { 
+            display: block; font-size: 11px; font-weight: 700; color: var(--text-secondary); 
+            text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; 
+        }
+        .input-box {
+            width: 100%; padding: 12px 16px; border-radius: 12px; 
+            border: none; background: var(--bg-subtle);
             font-family: inherit; font-size: 14px; color: var(--text-primary); 
             transition: all 0.2s;
         }
-        .input:hover { background: #F1F5F9; }
-        .input:focus { background: white; border-color: var(--brand); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
-
-        /* Client Manager Rows */
-        .cli-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
-        .cli-row:last-child { border-bottom: none; }
-        .cli-input-wrap { flex: 1; }
-        .cli-btn {
-            width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
-            color: var(--text-tertiary); cursor: pointer; transition: all 0.2s;
+        .input-box:focus { 
+            background: white; 
+            box-shadow: 0 0 0 2px var(--brand); /* Focus ring */
+            outline: none; 
         }
-        .cli-btn:hover { background: var(--input-bg); color: var(--text-primary); }
-        .cli-btn.danger:hover { background: #FEF2F2; color: #EF4444; }
+        .input-box::placeholder { color: var(--text-tertiary); }
+
+        /* Row of inputs */
+        .row { display: flex; gap: 16px; }
+        .col { flex: 1; }
+
+        /* Dropdown (Custom UI) */
+        .dropdown-menu {
+            position: absolute; top: calc(100% + 8px); right: 0;
+            background: var(--bg-surface); border: 1px solid var(--border);
+            border-radius: 12px; box-shadow: var(--shadow-float);
+            min-width: 200px; padding: 6px; display: none; z-index: 200;
+        }
+        .dropdown-menu.show { display: block; }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center; padding: 80px 0; color: var(--text-tertiary);
+        }
 
         /* Toast */
         .toast {
             position: fixed; bottom: 32px; left: 50%; transform: translate(-50%, 20px);
-            background: #1E293B; color: white; padding: 12px 24px; border-radius: 50px;
+            background: var(--text-primary); color: white; padding: 10px 20px; border-radius: 50px;
             font-size: 13px; font-weight: 500; opacity: 0; pointer-events: none; 
-            box-shadow: var(--shadow-modal); transition: all 0.3s var(--ease); z-index: 1000;
+            box-shadow: var(--shadow-float); transition: all 0.3s var(--ease); z-index: 1000;
         }
         .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
         .hidden { display: none; }
-        .text-btn { background: none; border: none; color: var(--text-secondary); font-weight: 600; font-size: 13px; cursor: pointer; }
+        .text-btn { background: none; border: none; color: var(--text-secondary); font-weight: 500; font-size: 13px; cursor: pointer; }
         .text-btn:hover { color: var(--text-primary); }
+        .danger { color: #EF4444; } .danger:hover { color: #DC2626; }
+
     </style>
 </head>
 <body>
 
     <header class="header">
         <div class="container-width header-content">
-            <div class="logo" onclick="window.location.reload()">adscenes</div>
+            <div class="logo" onclick="window.location.reload()">
+                adscenes <span>studio</span>
+            </div>
+            
             <div class="header-right">
                 <div style="position: relative;">
-                    <button class="ctx-btn" id="clientBtn" onclick="toggleDrop(event, 'clientDrop')">
-                        <span id="currentClient">All Clients</span>
-                        <svg class="icon-svg" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    </button>
-                    <div class="dropdown" id="clientDrop"></div>
+                    <div class="btn-icon" id="clientBtn" onclick="toggleDrop(event, 'clientDrop')">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </div>
+                    <div class="dropdown-menu" id="clientDrop">
+                        </div>
                 </div>
-                <div style="width: 1px; height: 20px; background: var(--border);"></div>
+
                 <div style="position: relative;">
-                    <button class="ctx-btn" style="padding: 0 8px;" onclick="toggleDrop(event, 'menuDrop')">
-                        <svg class="icon-dots" viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="1"></circle>
-                            <circle cx="19" cy="12" r="1"></circle>
-                            <circle cx="5" cy="12" r="1"></circle>
-                        </svg>
-                    </button>
-                    <div class="dropdown" id="menuDrop">
-                        <div class="drop-item" onclick="imp()">Import JSON</div>
-                        <div class="drop-item" onclick="exp()">Export JSON</div>
-                        <div class="drop-divider"></div>
-                        <div class="drop-item drop-danger" onclick="wipe()">Clear Workspace</div>
+                    <div class="btn-icon" onclick="toggleDrop(event, 'menuDrop')">
+                        <svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                    </div>
+                    <div class="dropdown-menu" id="menuDrop">
+                        <div class="drop-item" style="padding:10px; font-size:13px; cursor:pointer;" onclick="imp()">Import JSON</div>
+                        <div class="drop-item" style="padding:10px; font-size:13px; cursor:pointer;" onclick="exp()">Export JSON</div>
+                        <div style="height:1px; background:var(--border); margin:4px 0;"></div>
+                        <div class="drop-item danger" style="padding:10px; font-size:13px; cursor:pointer;" onclick="wipe()">Clear Data</div>
                     </div>
                 </div>
+
+                <button class="btn-primary" onclick="openModal()">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <span>Create</span>
+                </button>
             </div>
         </div>
     </header>
 
     <main class="main-wrapper">
         <div class="container-width">
+            
             <div class="toolbar">
-                <button class="btn btn-primary" onclick="openModal()">
-                    <svg class="icon-svg" style="stroke-width: 3;" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    New Post
-                </button>
-                <div class="switcher">
-                    <button class="switch-opt active" onclick="setView('table', this)">List</button>
-                    <button class="switch-opt" onclick="setView('card', this)">Cards</button>
-                    <button class="switch-opt" onclick="setView('calendar', this)">Calendar</button>
+                <div>
+                    <h1 style="font-size: 24px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.03em;">Campaigns</h1>
+                    <div style="font-size: 13px; color: var(--text-tertiary); margin-top: 4px;" id="subtitle">All posts for all clients</div>
+                </div>
+                
+                <div class="view-toggle">
+                    <button class="toggle-opt active" onclick="alert('Card/Calendar coming in Phase 2')">List</button>
+                    <button class="toggle-opt" onclick="alert('Card/Calendar coming in Phase 2')">Calendar</button>
                 </div>
             </div>
 
@@ -327,336 +310,329 @@
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 100px;">Status</th>
-                                <th style="width: 20%;">Title</th>
+                                <th style="width: 40%;">Content</th>
+                                <th style="width: 15%;">Status</th>
                                 <th style="width: 15%;">Client</th>
-                                <th>Caption</th>
-                                <th>Alt Text</th>
-                                <th style="width: 120px;">Asset</th> <th style="width: 120px;">Date</th>
+                                <th style="width: 15%;">Asset</th>
+                                <th style="width: 15%; text-align:right;">Date</th>
                             </tr>
                         </thead>
-                        <tbody id="tbody"></tbody>
+                        <tbody id="tbody">
+                            </tbody>
                     </table>
                 </div>
             </div>
 
-            <div id="v-card" class="view-container">
-                <div class="card-grid" id="cardgrid"></div>
-            </div>
-
-            <div id="v-calendar" class="view-container">
-                <div class="cal-frame">
-                    <div class="cal-head">
-                        <h2 id="calTitle" style="font-size: 18px; font-weight: 700;">Month</h2>
-                        <div style="display: flex; gap: 8px;">
-                            <button class="text-btn" onclick="movMonth(-1)">Prev</button>
-                            <button class="text-btn" onclick="currMonth()">Today</button>
-                            <button class="text-btn" onclick="movMonth(1)">Next</button>
-                        </div>
-                    </div>
-                    <div class="cal-grid" id="calgrid"></div>
-                </div>
-            </div>
         </div>
     </main>
 
     <div class="overlay" id="postModal">
         <div class="modal">
-            <div class="modal-header">
-                <h3 style="font-size: 18px; font-weight: 700;">Post Details</h3>
-                <button class="text-btn" onclick="closeModal()">✕</button>
-            </div>
             <div class="modal-body">
                 <form id="form" onsubmit="save(event)">
-                    <div class="field">
-                        <label class="label">Title</label>
-                        <input type="text" id="inpTitle" class="input" placeholder="e.g. Summer Launch" required>
+                    
+                    <div class="field-group">
+                        <label class="input-label">Title</label>
+                        <input type="text" id="inpTitle" class="input-box" placeholder="Campaign Name" required autofocus>
                     </div>
-                    <div style="display: flex; gap: 16px;">
-                        <div class="field" style="flex: 1;">
-                            <label class="label">Client</label>
-                            <select id="inpClient" class="input" style="background: var(--input-bg);"></select>
+
+                    <div class="row">
+                        <div class="col field-group">
+                            <label class="input-label">Client</label>
+                            <select id="inpClient" class="input-box" style="-webkit-appearance: none; cursor:pointer;"></select>
                         </div>
-                        <div class="field" style="flex: 1;">
-                            <label class="label">Date</label>
-                            <input type="date" id="inpDate" class="input" required>
+                        <div class="col field-group">
+                            <label class="input-label">Schedule Date</label>
+                            <input type="date" id="inpDate" class="input-box" required>
                         </div>
                     </div>
-                    <div class="field">
-                        <label class="label">Drive Link</label>
-                        <input type="url" id="inpLink" class="input" placeholder="https://drive.google.com...">
+
+                    <div class="field-group">
+                        <label class="input-label">Drive Asset Link</label>
+                        <input type="url" id="inpLink" class="input-box" placeholder="https://drive.google.com/...">
                     </div>
-                    <div class="field">
-                        <label class="label"><span>Caption</span><span id="charCount" style="font-weight:400; color:var(--text-tertiary);">0 chars</span></label>
-                        <textarea id="inpCaption" class="input" rows="4" placeholder="Post copy..." oninput="updateCount()"></textarea>
+
+                    <div class="field-group">
+                        <div style="display:flex; justify-content:space-between;">
+                            <label class="input-label">Caption</label>
+                            <span id="charCount" style="font-size:11px; color:var(--text-tertiary);">0</span>
+                        </div>
+                        <textarea id="inpCaption" class="input-box" rows="4" placeholder="Write your post..." oninput="updateCount()"></textarea>
                     </div>
-                    <div class="field">
-                        <label class="label">Alt Text</label>
-                        <input type="text" id="inpAlt" class="input" placeholder="Accessibility description">
+
+                    <div class="field-group">
+                        <label class="input-label">Alt Text</label>
+                        <input type="text" id="inpAlt" class="input-box" placeholder="Image description">
                     </div>
+                    
                     <input type="hidden" id="inpStatus" value="Draft">
                 </form>
             </div>
             <div class="modal-foot">
-                <button class="text-btn" style="color: #EF4444; margin-right: auto;" id="btnDel" onclick="delPost()">Delete</button>
-                <button class="text-btn" onclick="closeModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="document.getElementById('form').requestSubmit()">Save</button>
+                <button class="text-btn danger" id="btnDel" style="display:none;" onclick="delPost()">Delete</button>
+                <div style="flex:1;"></div>
+                <button class="text-btn" style="margin-right: 16px;" onclick="closeModal()">Cancel</button>
+                <button class="btn-primary" onclick="document.getElementById('form').requestSubmit()">Save Post</button>
             </div>
         </div>
     </div>
 
     <div class="overlay" id="cliModal">
         <div class="modal">
-            <div class="modal-header">
-                <h3 style="font-size: 18px; font-weight: 700;">Manage Clients</h3>
-                <button class="text-btn" onclick="closeModal()">✕</button>
-            </div>
             <div class="modal-body">
-                <div style="display: flex; gap: 12px; margin-bottom: 24px;">
-                    <input type="text" id="newCliName" class="input" placeholder="New Client Name">
-                    <button class="btn btn-primary" onclick="addCli()">Add</button>
+                <h3 style="font-size:16px; font-weight:600; margin-bottom:16px;">Manage Clients</h3>
+                <div style="display: flex; gap: 8px; margin-bottom: 24px;">
+                    <input type="text" id="newCliName" class="input-box" placeholder="New Client Name">
+                    <button class="btn-primary" onclick="addCli()">Add</button>
                 </div>
-                <div class="label" style="margin-bottom:12px; border-bottom:1px solid var(--border); padding-bottom:8px;">Active Clients</div>
-                <div id="cliList"></div>
+                <div style="max-height: 300px; overflow-y:auto; border-top:1px solid var(--border);">
+                    <div id="cliList"></div>
+                </div>
             </div>
             <div class="modal-foot">
+                <div style="flex:1"></div>
                 <button class="text-btn" onclick="closeModal()">Done</button>
             </div>
         </div>
     </div>
 
-    <div class="toast" id="toast">Saved</div>
+    <div class="toast" id="toast">Changes Saved</div>
     <input type="file" id="file" hidden accept=".json" onchange="readFile(event)">
 
     <script>
-        // --- DATA SAFETY ---
-        let posts = [];
-        let clients = [];
-        let filter = 'All Clients';
+        // --- DATA LAYER ---
+        const KEYS = { POSTS: 'adscenes_master_posts', CLIENTS: 'adscenes_master_clients' };
+        let posts = [], clients = [], filter = 'All Clients';
         let editId = null;
-        let cDate = new Date();
 
-        // New Master Keys
-        const MASTER_KEY_P = 'adscenes_master_posts';
-        const MASTER_KEY_C = 'adscenes_master_clients';
-
-        // History of keys to migrate from
-        const LEGACY_KEYS = ['as_posts_v9', 'as_posts_v8', 'as_posts_v7', 'as_posts_v6', 'as_posts_v5', 'as_posts_v4', 'as_posts_v3', 'as_posts_v2', 'as_posts'];
-        const LEGACY_CLIENTS = ['as_clients_v9', 'as_clients_v8', 'as_clients_v7', 'as_clients_v6', 'as_clients_v5', 'as_clients_v4', 'as_clients_v3', 'as_clients_v2', 'as_clients'];
+        // Legacy Keys for Migration
+        const LEGACY = ['as_posts_v9','as_posts_v8','as_posts_v7','as_posts_v6','as_posts_v5'];
 
         window.onload = () => {
-            // 1. Try to load Master Data
-            let pData = localStorage.getItem(MASTER_KEY_P);
-            let cData = localStorage.getItem(MASTER_KEY_C);
-
-            // 2. Migration Logic: If no master data, hunt for old data
-            if (!pData) {
-                for (let key of LEGACY_KEYS) {
-                    const found = localStorage.getItem(key);
-                    if (found && found !== '[]') { pData = found; break; }
-                }
-            }
-            if (!cData) {
-                for (let key of LEGACY_CLIENTS) {
-                    const found = localStorage.getItem(key);
-                    if (found && found !== '[]') { cData = found; break; }
-                }
+            // 1. Load Data
+            let pData = localStorage.getItem(KEYS.POSTS);
+            let cData = localStorage.getItem(KEYS.CLIENTS);
+            
+            // 2. Auto-Migrate if Master is empty
+            if(!pData) {
+                LEGACY.forEach(k => {
+                    let d = localStorage.getItem(k);
+                    if(d && d !== '[]') pData = d;
+                });
             }
 
-            // 3. Init
-            if (pData) posts = JSON.parse(pData);
-            if (cData) clients = JSON.parse(cData);
+            // 3. Parse
+            if(pData) posts = JSON.parse(pData);
+            if(cData) clients = JSON.parse(cData);
             
-            // 4. Save to Master immediately
-            persist();
-            
-            // Clean up old status
+            // 4. Sanitize Status
             posts = posts.map(p => ({...p, status: p.status || 'Draft'}));
+
             render();
             
+            // Global Click Listener (Close dropdowns)
             document.onclick = (e) => {
                 if(!e.target.closest('.header-right')) {
-                    document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('show'));
-                    document.querySelectorAll('.ctx-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.dropdown-menu').forEach(d => d.style.display = 'none');
                 }
             };
         };
 
         function persist() {
-            localStorage.setItem(MASTER_KEY_P, JSON.stringify(posts));
-            localStorage.setItem(MASTER_KEY_C, JSON.stringify(clients));
+            localStorage.setItem(KEYS.POSTS, JSON.stringify(posts));
+            localStorage.setItem(KEYS.CLIENTS, JSON.stringify(clients));
             render();
         }
 
-        // --- RENDERERS ---
+        // --- RENDER ENGINE ---
         function render() {
             const visible = filter === 'All Clients' ? posts : posts.filter(p => p.client === filter);
-            document.getElementById('currentClient').textContent = filter;
             
-            // Client Dropdown
-            const cliList = document.getElementById('clientDrop');
-            cliList.innerHTML = `
-                <div class="drop-item ${filter==='All Clients'?'selected':''}" onclick="setFilter('All Clients')"><span>All Clients</span><span style="font-size:11px; opacity:0.6">${posts.length}</span></div>
-                <div class="drop-divider"></div>
-                ${clients.map(c => `<div class="drop-item ${filter===c?'selected':''}" onclick="setFilter('${c}')"><span>${c}</span><span style="font-size:11px; opacity:0.6">${posts.filter(p=>p.client===c).length}</span></div>`).join('')}
-                <div class="drop-divider"></div>
-                <div class="drop-item" style="color:var(--brand); font-weight:600;" onclick="openCliManager()">Manage Clients</div>
-            `;
+            // Update Subtitle
+            document.getElementById('subtitle').textContent = filter === 'All Clients' 
+                ? `${posts.length} posts across all clients` 
+                : `${visible.length} posts for ${filter}`;
 
-            // Table
+            // 1. Render Table
             const tbody = document.getElementById('tbody');
             if(visible.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 80px; color:var(--text-tertiary);">No posts found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No posts found. Create one to get started.</td></tr>`;
             } else {
-                tbody.innerHTML = visible.map((p) => `
-                    <tr onclick="edit('${p.id}')" style="cursor:pointer">
-                        <td>${getStatusPill(p)}</td>
-                        <td><div class="text-truncate" style="font-weight:500; color:var(--text-primary)">${esc(p.title)}</div></td>
-                        <td><span class="pill">${esc(p.client)}</span></td>
+                tbody.innerHTML = visible.map(p => {
+                    // Status Color Logic
+                    let dotColor = 'var(--dot-draft)';
+                    if(p.status === 'Ready') dotColor = 'var(--dot-ready)';
+                    if(p.status === 'Posted') dotColor = 'var(--dot-posted)';
+
+                    return `
+                    <tr onclick="edit('${p.id}')">
                         <td>
-                            <div class="content-cell">
-                                <span class="text-truncate" style="max-width:200px;">${esc(p.caption) || '<span style="opacity:0.3">Empty</span>'}</span>
-                                ${p.caption ? `<div class="copy-btn" onclick="copy(event, '${esc(p.caption)}')" title="Copy"><svg class="icon-svg" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></div>` : ''}
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <div class="cell-title text-truncate" style="max-width:320px;">${esc(p.title)}</div>
+                                    <div class="cell-sub text-truncate" style="max-width:320px;">${esc(p.caption) || 'No caption'}</div>
+                                </div>
+                                <div class="action-group">
+                                    <div class="action-icon" onclick="copy(event, '${esc(p.caption)}')" title="Copy Caption">
+                                        <svg class="icon-svg" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                    </div>
+                                </div>
                             </div>
                         </td>
                         <td>
-                            <div class="content-cell">
-                                <span class="text-truncate" style="max-width:150px; color:var(--text-secondary);">${p.alt ? esc(p.alt) : '—'}</span>
-                                ${p.alt ? `<div class="copy-btn" onclick="copy(event, '${esc(p.alt)}')" title="Copy"><svg class="icon-svg" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></div>` : ''}
+                            <div class="status-badge" onclick="cycleStatus(event, '${p.id}')">
+                                <div class="dot" style="background:${dotColor}"></div>
+                                ${p.status}
                             </div>
                         </td>
-                        <td>${p.link ? `<a href="${p.link}" target="_blank" onclick="event.stopPropagation()" class="link-btn">Asset ↗</a>` : '<span style="color:#E2E8F0">—</span>'}</td>
-                        <td style="color:var(--text-secondary)">${formatDate(p.date)}</td>
+                        <td><span style="font-weight:500; font-size:13px;">${esc(p.client)}</span></td>
+                        <td>
+                            ${p.link ? `<a href="${p.link}" target="_blank" onclick="event.stopPropagation()" class="asset-btn"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>Asset</a>` : '<span style="color:var(--text-tertiary); font-size:12px;">—</span>'}
+                        </td>
+                        <td style="text-align:right; font-variant-numeric: tabular-nums;">${formatDate(p.date)}</td>
                     </tr>
-                `).join('');
+                `}).join('');
             }
 
-            // Cards
-            const cgrid = document.getElementById('cardgrid');
-            cgrid.innerHTML = visible.length ? visible.map(p => `
-                <div class="card" onclick="edit('${p.id}')">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-                        <span class="pill">${esc(p.client)}</span>
-                        ${getStatusPill(p)}
-                    </div>
-                    <div class="card-title text-truncate">${esc(p.title)}</div>
-                    <div class="text-truncate" style="font-size:13px; color:var(--text-secondary); margin-bottom:6px;">${esc(p.caption) || 'No caption'}</div>
-                    <div class="text-truncate" style="font-size:12px; color:var(--text-tertiary); margin-bottom:16px;">ALT: ${p.alt ? esc(p.alt) : '—'}</div>
-                    <div style="margin-top:auto; display:flex; justify-content:space-between; align-items:center;">
-                         <span style="font-size:12px; color:var(--text-tertiary);">${formatDate(p.date)}</span>
-                         ${p.link ? `<a href="${p.link}" target="_blank" onclick="event.stopPropagation()" class="link-btn" style="padding:4px 8px; font-size:11px;">View Asset</a>` : ''}
-                    </div>
-                </div>
-            `).join('') : '<div style="text-align:center; color:var(--text-tertiary); grid-column:1/-1; padding:40px;">No posts here.</div>';
-
-            renderCal(visible);
+            // 2. Render Client Dropdown
+            const cliDrop = document.getElementById('clientDrop');
+            cliDrop.innerHTML = `
+                <div style="padding:10px; font-size:13px; font-weight:600; cursor:pointer; color:var(--brand);" onclick="setFilter('All Clients')">All Clients</div>
+                <div style="height:1px; background:var(--border); margin:4px 0;"></div>
+                ${clients.map(c => `<div style="padding:8px 10px; font-size:13px; cursor:pointer;" onclick="setFilter('${c}')">${c}</div>`).join('')}
+                <div style="height:1px; background:var(--border); margin:4px 0;"></div>
+                <div style="padding:10px; font-size:12px; cursor:pointer; color:var(--text-secondary);" onclick="openCliManager()">Manage Clients...</div>
+            `;
         }
 
-        function renderCal(list) {
-            const mNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            document.getElementById('calTitle').textContent = `${mNames[cDate.getMonth()]} ${cDate.getFullYear()}`;
-            const grid = document.getElementById('calgrid');
-            const y = cDate.getFullYear(), m = cDate.getMonth();
-            const firstDay = new Date(y, m, 1).getDay();
-            const daysInM = new Date(y, m + 1, 0).getDate();
-            const today = new Date().toISOString().split('T')[0];
-            
-            // Generate Grid
-            let html = `<div class="cal-day-label">Sun</div><div class="cal-day-label">Mon</div><div class="cal-day-label">Tue</div><div class="cal-day-label">Wed</div><div class="cal-day-label">Thu</div><div class="cal-day-label">Fri</div><div class="cal-day-label">Sat</div>`;
-            for(let i=0; i<firstDay; i++) html += `<div class="cal-cell" style="background:#F8FAFC"></div>`;
-            for(let d=1; d<=daysInM; d++) {
-                const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                const isToday = dateStr === today;
-                const pList = list.filter(p => p.date === dateStr);
-                html += `<div class="cal-cell ${isToday?'today':''}" onclick="openModal('${dateStr}')"><div class="cal-num">${d}</div>${pList.map(p => `<div class="event-pill" onclick="event.stopPropagation(); edit('${p.id}')">${esc(p.title)}</div>`).join('')}</div>`;
-            }
-            grid.innerHTML = html;
-        }
-
-        // --- HELPERS ---
-        function getStatusPill(p) {
-            const cls = p.status === 'Posted' ? 'status-posted' : (p.status === 'Ready' ? 'status-ready' : 'status-draft');
-            return `<span class="status-pill ${cls}" onclick="cycleStatus(event, '${p.id}')">${p.status}</span>`;
-        }
-        function cycleStatus(e, id) { e.stopPropagation(); const idx = posts.findIndex(p => p.id === id); const s = posts[idx].status; posts[idx].status = s === 'Draft' ? 'Ready' : (s === 'Ready' ? 'Posted' : 'Draft'); persist(); }
-        function copy(e, text) { e.stopPropagation(); navigator.clipboard.writeText(text); toast('Copied to Clipboard'); }
-        function updateCount() { const len = document.getElementById('inpCaption').value.length; document.getElementById('charCount').textContent = len + ' chars'; }
-        
-        // --- CORE ---
-        function setView(v, btn) { document.querySelectorAll('.view-container').forEach(e => e.classList.remove('active')); document.getElementById('v-'+v).classList.add('active'); document.querySelectorAll('.switch-opt').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
-        function toggleDrop(e, id) { e.stopPropagation(); document.getElementById(id).classList.toggle('show'); document.getElementById(e.currentTarget.id).classList.toggle('active'); }
-        function setFilter(c) { filter = c; render(); }
-
-        // --- MODAL ---
+        // --- ACTIONS ---
         function openModal(dateStr = null) {
-            editId = null; document.getElementById('form').reset(); document.getElementById('btnDel').style.display = 'none';
-            const sel = document.getElementById('inpClient'); sel.innerHTML = clients.map(c => `<option>${c}</option>`).join('');
+            editId = null; 
+            document.getElementById('form').reset();
+            document.getElementById('btnDel').style.display = 'none';
+            
+            // Populate Clients
+            const sel = document.getElementById('inpClient');
+            sel.innerHTML = clients.map(c => `<option>${c}</option>`).join('');
             if(filter !== 'All Clients') sel.value = filter;
+
             document.getElementById('inpDate').value = dateStr || new Date().toISOString().split('T')[0];
-            updateCount(); document.getElementById('postModal').classList.add('active');
+            document.getElementById('postModal').classList.add('active');
+            updateCount();
         }
+
         function edit(id) {
-            const p = posts.find(x => x.id === id); if(!p) return; editId = id;
-            const sel = document.getElementById('inpClient'); sel.innerHTML = clients.map(c => `<option>${c}</option>`).join('');
+            const p = posts.find(x => x.id === id);
+            if(!p) return;
+            editId = id;
+            
+            const sel = document.getElementById('inpClient');
+            sel.innerHTML = clients.map(c => `<option>${c}</option>`).join('');
             sel.value = p.client;
-            document.getElementById('inpTitle').value = p.title; document.getElementById('inpDate').value = p.date;
-            document.getElementById('inpLink').value = p.link || ''; document.getElementById('inpCaption').value = p.caption;
-            document.getElementById('inpAlt').value = p.alt || ''; document.getElementById('inpStatus').value = p.status;
-            updateCount(); document.getElementById('btnDel').style.display = 'block'; document.getElementById('postModal').classList.add('active');
+
+            document.getElementById('inpTitle').value = p.title;
+            document.getElementById('inpDate').value = p.date;
+            document.getElementById('inpLink').value = p.link || '';
+            document.getElementById('inpCaption').value = p.caption;
+            document.getElementById('inpAlt').value = p.alt || '';
+            document.getElementById('inpStatus').value = p.status;
+            
+            document.getElementById('btnDel').style.display = 'block';
+            document.getElementById('postModal').classList.add('active');
+            updateCount();
         }
+
         function save(e) {
             e.preventDefault();
-            const p = { id: editId || 'post_' + Date.now(), title: document.getElementById('inpTitle').value, client: document.getElementById('inpClient').value, date: document.getElementById('inpDate').value, link: document.getElementById('inpLink').value, caption: document.getElementById('inpCaption').value, alt: document.getElementById('inpAlt').value, status: document.getElementById('inpStatus').value || 'Draft' };
-            if(editId) { const idx = posts.findIndex(x => x.id === editId); posts[idx] = p; toast('Post Updated'); } else { posts.push(p); toast('Post Created'); }
-            closeModal(); persist();
+            const p = {
+                id: editId || 'post_' + Date.now(),
+                title: document.getElementById('inpTitle').value,
+                client: document.getElementById('inpClient').value,
+                date: document.getElementById('inpDate').value,
+                link: document.getElementById('inpLink').value,
+                caption: document.getElementById('inpCaption').value,
+                alt: document.getElementById('inpAlt').value,
+                status: document.getElementById('inpStatus').value || 'Draft'
+            };
+
+            if(editId) {
+                const idx = posts.findIndex(x => x.id === editId);
+                posts[idx] = p;
+                toast('Post Updated');
+            } else {
+                posts.push(p);
+                toast('Post Created');
+            }
+            closeModal();
+            persist();
         }
-        function delPost() { if(confirm('Delete?')) { posts = posts.filter(x => x.id !== editId); closeModal(); persist(); toast('Deleted'); } }
-        function closeModal() { document.querySelectorAll('.overlay').forEach(o => o.classList.remove('active')); }
+
+        function delPost() {
+            if(confirm('Are you sure you want to delete this post?')) {
+                posts = posts.filter(x => x.id !== editId);
+                closeModal();
+                persist();
+                toast('Deleted');
+            }
+        }
+
+        function cycleStatus(e, id) {
+            e.stopPropagation();
+            const idx = posts.findIndex(p => p.id === id);
+            const map = { 'Draft': 'Ready', 'Ready': 'Posted', 'Posted': 'Draft' };
+            posts[idx].status = map[posts[idx].status];
+            persist();
+        }
 
         // --- CLIENT MANAGER ---
-        function openCliManager() { document.getElementById('clientDrop').classList.remove('show'); document.getElementById('cliModal').classList.add('active'); renderCliList(); setTimeout(() => document.getElementById('newCliName').focus(), 100); }
+        function openCliManager() {
+            document.getElementById('clientDrop').style.display = 'none';
+            document.getElementById('cliModal').classList.add('active');
+            renderCliList();
+        }
         function renderCliList() {
             const list = document.getElementById('cliList');
-            if(clients.length === 0) { list.innerHTML = '<div style="color:var(--text-tertiary); text-align:center; padding:20px;">No clients yet.</div>'; return; }
+            if(clients.length === 0) { list.innerHTML = '<div style="padding:20px; text-align:center; font-size:13px; color:var(--text-tertiary);">No clients yet.</div>'; return; }
             list.innerHTML = clients.map((c, i) => `
-                <div class="cli-row">
-                    <div class="cli-input-wrap"><input type="text" class="input" style="padding:8px 12px; background:transparent;" value="${c}" onchange="renameCli(${i}, this.value)"></div>
-                    <div class="cli-btn danger" onclick="delCli(${i})" title="Delete"><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--border);">
+                    <input class="input-box" style="padding:6px; background:transparent;" value="${c}" onchange="renameCli(${i}, this.value)">
+                    <div style="cursor:pointer; color:#EF4444; padding:4px;" onclick="delCli(${i})">✕</div>
                 </div>
             `).join('');
         }
         function addCli() {
             const n = document.getElementById('newCliName').value.trim();
-            if(n && !clients.includes(n)) { clients.push(n); setFilter(n); persist(); toast('Client Added'); document.getElementById('newCliName').value = ''; renderCliList(); }
+            if(n && !clients.includes(n)) { clients.push(n); setFilter(n); persist(); renderCliList(); document.getElementById('newCliName').value=''; }
         }
-        function renameCli(idx, newName) {
-            newName = newName.trim(); const oldName = clients[idx];
-            if(!newName || newName === oldName || clients.includes(newName)) { renderCliList(); return; }
-            clients[idx] = newName;
-            posts.forEach(p => { if(p.client === oldName) p.client = newName; });
-            if(filter === oldName) filter = newName;
-            persist(); renderCliList(); toast('Renamed');
+        function renameCli(idx, val) {
+            const old = clients[idx];
+            if(val && !clients.includes(val)) {
+                clients[idx] = val;
+                posts.forEach(p => { if(p.client === old) p.client = val; });
+                if(filter === old) filter = val;
+                persist();
+            }
         }
         function delCli(idx) {
-            const name = clients[idx];
-            const hasPosts = posts.some(p => p.client === name);
-            if(hasPosts) { alert(`Cannot delete "${name}": It has active posts. Please reassign or delete them first.`); return; }
-            if(confirm(`Delete client "${name}"?`)) { clients.splice(idx, 1); if(filter === name) filter = 'All Clients'; persist(); renderCliList(); toast('Client Deleted'); }
+            if(confirm('Delete client?')) { clients.splice(idx, 1); persist(); renderCliList(); }
         }
 
         // --- UTILS ---
-        function exp() { const blob = new Blob([JSON.stringify({posts, clients}, null, 2)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'adscenes-backup.json'; a.click(); }
-        function imp() { document.getElementById('file').click(); }
-        function readFile(e) { const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = (ev) => { try { const d = JSON.parse(ev.target.result); if(d.posts) posts = d.posts.map(p => ({...p, status:p.status||'Draft'})); if(d.clients) clients = d.clients; persist(); toast('Imported'); } catch(x) { alert('Invalid File'); } }; r.readAsText(f); e.target.value = ''; }
-        function wipe() { if(confirm('Clear all?')) { posts=[]; clients=[]; persist(); toast('Cleared'); } }
-        function movMonth(n) { cDate.setMonth(cDate.getMonth()+n); render(); }
-        function currMonth() { cDate = new Date(); render(); }
-        function toast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
-        function esc(t) { return t ? t.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") : ''; }
+        function toggleDrop(e, id) { e.stopPropagation(); document.getElementById(id).style.display = 'block'; }
+        function closeModal() { document.querySelectorAll('.overlay').forEach(o => o.classList.remove('active')); }
+        function setFilter(c) { filter = c; render(); }
+        function updateCount() { document.getElementById('charCount').textContent = document.getElementById('inpCaption').value.length; }
+        function copy(e, t) { e.stopPropagation(); navigator.clipboard.writeText(t); toast('Copied'); }
+        function toast(m) { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
+        function esc(t) { return t ? t.replace(/</g, "&lt;").replace(/>/g, "&gt;") : ''; }
         function formatDate(s) { return new Date(s).toLocaleDateString('en-US', {month:'short', day:'numeric'}); }
+        
+        // Backup Utils
+        function exp() { const b = new Blob([JSON.stringify({posts,clients})],{type:'application/json'}); const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download='adscenes_backup.json'; a.click(); }
+        function imp() { document.getElementById('file').click(); }
+        function readFile(e) { const f=e.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=(ev)=>{ try{ const d=JSON.parse(ev.target.result); if(d.posts)posts=d.posts; if(d.clients)clients=d.clients; persist(); toast('Imported'); }catch(x){alert('Error');}}; r.readAsText(f); }
+        function wipe() { if(confirm('Nuke all data?')) { localStorage.clear(); location.reload(); } }
 
     </script>
 </body>
 </html>
-
-
