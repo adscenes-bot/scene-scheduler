@@ -108,30 +108,27 @@
         .view-panel.active { display: block; }
         @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
+        /* LIST VIEW */
         .data-table { 
             width: 100%; border-collapse: collapse; background: var(--bg-surface); 
             border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border); 
         }
-        
         .data-table th {
             text-align: left; padding: 16px 24px; font-size: 11px; font-weight: 600; 
             color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;
             border-bottom: 1px solid var(--border); background: #F9FAFB;
         }
-        
         .data-table td {
             padding: 16px 24px; border-bottom: 1px solid var(--border);
             font-size: 14px; vertical-align: middle; color: var(--text-main);
             transition: background 0.15s;
         }
         .data-table tr:last-child td { border-bottom: none; }
-        .data-table tr { cursor: pointer; }
         .data-table tr:hover td { background: #F9FAFB; }
         
         .cell-main { font-weight: 600; color: var(--text-main); margin-bottom: 4px; }
         .cell-sub { font-size: 13px; color: var(--text-muted); max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* Status Pills */
         .status-pill {
             display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px;
             border-radius: 20px; font-size: 12px; font-weight: 500;
@@ -140,7 +137,6 @@
         .status-pill:hover { filter: brightness(0.95); }
         .dot { width: 6px; height: 6px; border-radius: 50%; }
 
-        /* Asset Button */
         .asset-btn {
             display: inline-flex; align-items: center; gap: 6px;
             font-size: 12px; font-weight: 500; color: var(--brand);
@@ -149,47 +145,63 @@
         }
         .asset-btn:hover { background: #DBEAFE; }
 
-        /* --- CARD & CALENDAR --- */
-        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
-        .card { 
-            background: white; border-radius: 16px; border: 1px solid var(--border); 
-            padding: 24px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; gap: 12px; 
-            box-shadow: var(--shadow-sm);
+        /* --- THE NEW ROADMAP BOARD (CARDS VIEW) --- */
+        .roadmap-container {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+            overflow-x: auto; padding-bottom: 20px;
         }
-        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-float); border-color: #D1D5DB; }
+        
+        .roadmap-col {
+            display: flex; flex-direction: column; gap: 16px;
+        }
+        
+        .col-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding-bottom: 12px; border-bottom: 2px solid transparent;
+            margin-bottom: 4px;
+        }
+        
+        /* Column Themes */
+        .col-backlog .col-header { border-color: #E5E7EB; }
+        .col-week .col-header { border-color: #3B82F6; }
+        .col-next .col-header { border-color: #8B5CF6; }
+        .col-future .col-header { border-color: #10B981; }
+        
+        .col-title { font-size: 14px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.05em; }
+        .col-count { font-size: 12px; font-weight: 600; color: var(--text-light); background: #E5E7EB; padding: 2px 8px; border-radius: 10px; }
+        
+        .road-card {
+            background: white; border-radius: 12px; border: 1px solid var(--border);
+            padding: 16px; box-shadow: var(--shadow-sm); cursor: pointer;
+            transition: all 0.2s; display: flex; flex-direction: column; gap: 10px;
+        }
+        .road-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-float); border-color: #D1D5DB; }
+        
+        .road-card.no-date { border-style: dashed; } /* Visual cue for backlog */
 
+        .card-meta { display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text-muted); font-weight: 600; }
+        .card-title { font-size: 14px; font-weight: 600; color: var(--text-main); line-height: 1.4; }
+        .card-snippet { font-size: 12px; color: var(--text-muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+        .empty-zone {
+            border: 2px dashed #E5E7EB; border-radius: 12px; height: 100px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-light); font-size: 13px; font-weight: 500;
+        }
+
+        /* --- CALENDAR VIEW --- */
         .cal-frame { background: white; border-radius: 20px; border: 1px solid var(--border); padding: 24px; box-shadow: var(--shadow-sm); }
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         .cal-title { font-size: 18px; font-weight: 700; }
-        
-        .cal-grid { 
-            display: grid; grid-template-columns: repeat(7, 1fr); 
-            width: 100%; border-top: 1px solid var(--border); border-left: 1px solid var(--border); 
-            border-radius: 12px; overflow: hidden;
-        }
-        .cal-head-cell { 
-            background: #F9FAFB; padding: 12px; text-align: center; 
-            font-size: 11px; font-weight: 700; color: var(--text-muted); 
-            border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); 
-        }
-        .cal-cell { 
-            background: white; min-height: 140px; padding: 10px; cursor: pointer; 
-            border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); 
-            transition: background 0.1s; display: flex; flex-direction: column; 
-        }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); width: 100%; border-top: 1px solid var(--border); border-left: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+        .cal-head-cell { background: #F9FAFB; padding: 12px; text-align: center; font-size: 11px; font-weight: 700; color: var(--text-muted); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .cal-cell { background: white; min-height: 140px; padding: 10px; cursor: pointer; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); transition: background 0.1s; display: flex; flex-direction: column; }
         .cal-cell:hover { background: #F9FAFB; }
-        .cal-num { 
-            width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-            font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; 
-        }
+        .cal-num { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
         .cal-cell.today .cal-num { background: var(--text-main); color: white; }
-        .cal-event { 
-            background: var(--brand-subtle); color: var(--brand); padding: 3px 6px; 
-            border-radius: 4px; font-size: 11px; font-weight: 600; margin-bottom: 2px; 
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-left: 2px solid var(--brand);
-        }
+        .cal-event { background: var(--brand-subtle); color: var(--brand); padding: 3px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-left: 2px solid var(--brand); }
 
-        /* --- THE NEW STUDIO MODAL --- */
+        /* --- STUDIO MODAL --- */
         .overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.3); 
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
@@ -202,70 +214,29 @@
             background: white; width: 560px; border-radius: 24px;
             box-shadow: var(--shadow-modal); transform: scale(0.96) translateY(10px); 
             transition: all 0.3s var(--ease); overflow: hidden;
-            display: flex; flex-direction: column;
-            max-height: 85vh;
+            display: flex; flex-direction: column; max-height: 85vh;
         }
         .overlay.active .modal { transform: scale(1) translateY(0); }
 
-        .modal-header {
-            padding: 24px 32px; border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(255,255,255,0.9);
-        }
+        .modal-header { padding: 24px 32px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.9); }
         .modal-title { font-size: 18px; font-weight: 700; color: var(--text-main); letter-spacing: -0.02em; }
-        .modal-close { 
-            width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; 
-            color: var(--text-light); cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s; 
-        }
+        .modal-close { width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: var(--text-light); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .modal-close:hover { background: #F3F4F6; color: var(--text-main); }
-
         .modal-body { padding: 32px; overflow-y: auto; }
-
-        .field { margin-bottom: 24px; position: relative; }
-        .field-label { 
-            display: flex; justify-content: space-between; align-items: center;
-            font-size: 11px; font-weight: 700; color: var(--text-muted); 
-            text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; 
-        }
-        
-        /* The New Inputs */
-        .studio-input {
-            width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid transparent;
-            background: #F3F4F6; font-size: 15px; color: var(--text-main); font-family: inherit; font-weight: 500;
-            transition: all 0.2s ease;
-        }
+        .field { margin-bottom: 24px; }
+        .field-label { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .studio-input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid transparent; background: #F3F4F6; font-size: 15px; color: var(--text-main); font-family: inherit; font-weight: 500; transition: all 0.2s ease; }
         .studio-input:hover { background: #E5E7EB; }
-        .studio-input:focus { 
-            background: white; border-color: var(--brand); 
-            box-shadow: 0 0 0 4px var(--brand-glow); outline: none; 
-        }
-        .studio-input::placeholder { color: #9CA3AF; }
-
+        .studio-input:focus { background: white; border-color: var(--brand); box-shadow: 0 0 0 4px var(--brand-glow); outline: none; }
         .field-row { display: flex; gap: 20px; }
         .field-col { flex: 1; }
-
-        .modal-foot { 
-            padding: 24px 32px; background: #F9FAFB; border-top: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
-        }
+        .modal-foot { padding: 24px 32px; background: #F9FAFB; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 
         /* Dropdowns */
-        .popover {
-            position: absolute; top: calc(100% + 8px); right: 0;
-            background: white; border: 1px solid var(--border);
-            border-radius: 14px; box-shadow: var(--shadow-float);
-            min-width: 220px; padding: 6px; display: none; z-index: 200;
-        }
+        .popover { position: absolute; top: calc(100% + 8px); right: 0; background: white; border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-float); min-width: 220px; padding: 6px; display: none; z-index: 200; }
         .pop-item { padding: 10px 12px; font-size: 13px; border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; color: var(--text-main); }
         .pop-item:hover { background: #F3F4F6; }
-        
-        .toast {
-            position: fixed; bottom: 32px; left: 50%; transform: translate(-50%, 20px);
-            background: var(--text-main); color: white; padding: 10px 24px; border-radius: 50px;
-            font-size: 13px; font-weight: 500; opacity: 0; pointer-events: none; 
-            box-shadow: var(--shadow-float); transition: all 0.3s; z-index: 1000;
-        }
+        .toast { position: fixed; bottom: 32px; left: 50%; transform: translate(-50%, 20px); background: var(--text-main); color: white; padding: 10px 24px; border-radius: 50px; font-size: 13px; font-weight: 500; opacity: 0; pointer-events: none; box-shadow: var(--shadow-float); transition: all 0.3s; z-index: 1000; }
         .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
     </style>
@@ -277,7 +248,6 @@
             <div class="logo" onclick="window.location.reload()">
                 adscenes <span>organiser</span>
             </div>
-            
             <div class="actions">
                 <div style="position: relative;">
                     <button class="btn btn-ghost" onclick="toggle('clientPop')">
@@ -286,7 +256,6 @@
                     </button>
                     <div id="clientPop" class="popover"></div>
                 </div>
-
                 <div style="position: relative;">
                     <button class="btn btn-ghost" onclick="toggle('menuPop')">
                         <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
@@ -297,7 +266,6 @@
                         <div class="pop-item" style="color:#EF4444;" onclick="wipeData()">Reset App</div>
                     </div>
                 </div>
-
                 <button class="btn btn-primary" onclick="openModal()">
                     <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     <span>New Post</span>
@@ -308,7 +276,6 @@
 
     <main class="main-content">
         <div class="container">
-            
             <div class="toolbar">
                 <div>
                     <h1 class="page-title">Campaigns</h1>
@@ -316,7 +283,7 @@
                 </div>
                 <div class="view-switch">
                     <button class="switch-btn active" onclick="setView('list', this)">List</button>
-                    <button class="switch-btn" onclick="setView('card', this)">Cards</button>
+                    <button class="switch-btn" onclick="setView('roadmap', this)">Board</button>
                     <button class="switch-btn" onclick="setView('cal', this)">Calendar</button>
                 </div>
             </div>
@@ -336,8 +303,9 @@
                 </table>
             </div>
 
-            <div id="view-card" class="view-panel">
-                <div class="card-grid" id="cardGrid"></div>
+            <div id="view-roadmap" class="view-panel">
+                <div class="roadmap-container" id="roadmapGrid">
+                    </div>
             </div>
 
             <div id="view-cal" class="view-panel">
@@ -353,7 +321,6 @@
                     <div class="cal-grid" id="calGrid"></div>
                 </div>
             </div>
-
         </div>
     </main>
 
@@ -449,18 +416,10 @@
         // Init
         window.addEventListener('DOMContentLoaded', () => {
             loadData();
-            // Auto-recovery check (Safe Mode)
-            if(posts.length === 0) {
-                console.log('Main DB empty. Checking legacy...');
-                recoverLegacy();
-            }
+            if(posts.length === 0) recoverLegacy();
             render();
-            
-            // Global click handler
             window.onclick = (e) => {
-                if(!e.target.closest('.actions')) {
-                    document.querySelectorAll('.popover').forEach(el => el.style.display = 'none');
-                }
+                if(!e.target.closest('.actions')) document.querySelectorAll('.popover').forEach(el => el.style.display = 'none');
             };
         });
 
@@ -479,29 +438,17 @@
             render();
         }
 
-        // --- RECOVERY (Safe Mode) ---
+        // --- RECOVERY ---
         function recoverLegacy() {
-            const keys = ['adscenes_master_posts', 'as_posts_v9', 'as_posts_v8', 'as_posts_v7'];
+            const keys = ['adscenes_master_posts', 'as_posts_v9', 'as_posts_v8'];
             for(let k of keys) {
                 const d = localStorage.getItem(k);
                 if(d && d !== '[]') {
-                    try {
-                        const rec = JSON.parse(d);
-                        posts = rec;
-                        persist(); // Save to new DB
-                        toast('Data Recovered');
-                        break;
-                    } catch(e){}
+                    try { posts = JSON.parse(d); persist(); toast('Restored Old Data'); break; } catch(e){}
                 }
             }
         }
-        
-        function startRecovery() {
-            if(confirm('Scan all storage for lost data?')) {
-                recoverLegacy();
-                location.reload();
-            }
-        }
+        function startRecovery() { if(confirm('Scan?')) { recoverLegacy(); location.reload(); } }
 
         // --- RENDER ---
         function render() {
@@ -509,17 +456,14 @@
             document.getElementById('subtitle').innerText = `${visible.length} Active Campaigns`;
             document.getElementById('currentClient').innerText = filter;
 
-            // 1. List View
+            // 1. LIST VIEW
             const tbody = document.getElementById('listBody');
             if(visible.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:60px; color:var(--text-light);">No campaigns found.</td></tr>`;
             } else {
                 tbody.innerHTML = visible.map(p => `
                     <tr onclick="edit('${p.id}')">
-                        <td>
-                            <div class="cell-main">${esc(p.title)}</div>
-                            <div class="cell-sub">${esc(p.caption) || 'No caption'}</div>
-                        </td>
+                        <td><div class="cell-main">${esc(p.title)}</div><div class="cell-sub">${esc(p.caption) || 'No caption'}</div></td>
                         <td>${getStatusBadge(p)}</td>
                         <td>${esc(p.client)}</td>
                         <td>${p.link ? `<a href="${p.link}" target="_blank" onclick="event.stopPropagation()" class="asset-btn"><svg class="icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>Asset</a>` : '<span style="color:#E5E7EB">—</span>'}</td>
@@ -528,26 +472,13 @@
                 `).join('');
             }
 
-            // 2. Card View
-            document.getElementById('cardGrid').innerHTML = visible.map(p => `
-                <div class="card" onclick="edit('${p.id}')">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                        <span style="font-size:12px; font-weight:600; color:var(--text-muted);">${esc(p.client)}</span>
-                        ${getStatusBadge(p)}
-                    </div>
-                    <div style="font-weight:700; font-size:16px; margin-bottom:4px;">${esc(p.title)}</div>
-                    <div style="font-size:13px; color:var(--text-muted); flex:1; margin-bottom:12px;">${esc(p.caption) || 'No caption'}</div>
-                    <div style="border-top:1px solid var(--border); padding-top:12px; display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:12px; color:var(--text-muted);">${formatDate(p.date)}</span>
-                        ${p.link ? '<svg class="icon" style="color:var(--brand);" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>' : ''}
-                    </div>
-                </div>
-            `).join('');
+            // 2. ROADMAP (BOARD) VIEW
+            renderRoadmap(visible);
 
-            // 3. Calendar View
+            // 3. CALENDAR VIEW
             renderCal(visible);
 
-            // 4. Clients Popover
+            // 4. Client List
             document.getElementById('clientPop').innerHTML = `
                 <div class="pop-item" style="color:var(--brand); font-weight:600;" onclick="setFilter('All Clients')">All Clients</div>
                 <div style="height:1px; background:var(--border); margin:4px 0;"></div>
@@ -557,10 +488,54 @@
             `;
         }
 
+        // --- NEW ROADMAP LOGIC ---
+        function renderRoadmap(list) {
+            // Buckets
+            const backlog = [], thisWeek = [], nextWeek = [], future = [];
+            const today = new Date();
+            const currentWeekEnd = new Date(today);
+            currentWeekEnd.setDate(today.getDate() + (7 - today.getDay())); // End of this week (Sat/Sun)
+            const nextWeekEnd = new Date(currentWeekEnd);
+            nextWeekEnd.setDate(currentWeekEnd.getDate() + 7);
+
+            list.forEach(p => {
+                if(!p.date) { backlog.push(p); return; }
+                const d = new Date(p.date);
+                if(d <= currentWeekEnd) thisWeek.push(p);
+                else if(d <= nextWeekEnd) nextWeek.push(p);
+                else future.push(p);
+            });
+
+            const cols = [
+                { title: "Backlog / Ideas", list: backlog, cls: "col-backlog" },
+                { title: "This Week", list: thisWeek, cls: "col-week" },
+                { title: "Next Week", list: nextWeek, cls: "col-next" },
+                { title: "The Future", list: future, cls: "col-future" }
+            ];
+
+            document.getElementById('roadmapGrid').innerHTML = cols.map(col => `
+                <div class="roadmap-col ${col.cls}">
+                    <div class="col-header">
+                        <div class="col-title">${col.title}</div>
+                        <div class="col-count">${col.list.length}</div>
+                    </div>
+                    ${col.list.length ? col.list.map(p => `
+                        <div class="road-card ${!p.date?'no-date':''}" onclick="edit('${p.id}')">
+                            <div class="card-meta">
+                                <span>${p.date ? formatDate(p.date) : 'No Date'}</span>
+                                ${p.status === 'Ready' ? '<span style="color:#059669;">Ready</span>' : ''}
+                            </div>
+                            <div class="card-title">${esc(p.title)}</div>
+                            <div class="card-snippet">${esc(p.caption) || 'No caption'}</div>
+                        </div>
+                    `).join('') : '<div class="empty-zone">Empty</div>'}
+                </div>
+            `).join('');
+        }
+
         function renderCal(list) {
             const mNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             document.getElementById('calTitle').innerText = `${mNames[cDate.getMonth()]} ${cDate.getFullYear()}`;
-            
             const y = cDate.getFullYear(), m = cDate.getMonth();
             const first = new Date(y, m, 1).getDay();
             const days = new Date(y, m + 1, 0).getDate();
@@ -568,35 +543,18 @@
 
             let html = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d => `<div class="cal-head-cell">${d}</div>`).join('');
             for(let i=0; i<first; i++) html += `<div class="cal-cell" style="background:#F9FAFB;"></div>`;
-            
             for(let d=1; d<=days; d++) {
                 const iso = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                 const has = list.filter(p => p.date === iso);
-                html += `
-                    <div class="cal-cell ${iso===today?'today':''}" onclick="openModal('${iso}')">
-                        <div class="cal-num">${d}</div>
-                        ${has.map(p => `<div class="cal-event">${esc(p.title)}</div>`).join('')}
-                    </div>
-                `;
+                html += `<div class="cal-cell ${iso===today?'today':''}" onclick="openModal('${iso}')"><div class="cal-num">${d}</div>${has.map(p => `<div class="cal-event">${esc(p.title)}</div>`).join('')}</div>`;
             }
             document.getElementById('calGrid').innerHTML = html;
         }
 
-        // --- HELPERS ---
         function getStatusBadge(p) {
-            const map = {
-                'Draft': { bg: 'var(--s-draft-bg)', fg: 'var(--s-draft-fg)' },
-                'WIP': { bg: 'var(--s-wip-bg)', fg: 'var(--s-wip-fg)' },
-                'Ready': { bg: 'var(--s-ready-bg)', fg: 'var(--s-ready-fg)' },
-                'Posted': { bg: 'var(--s-posted-bg)', fg: 'var(--s-posted-fg)' }
-            };
+            const map = { 'Draft':{bg:'var(--s-draft-bg)',fg:'var(--s-draft-fg)'}, 'WIP':{bg:'var(--s-wip-bg)',fg:'var(--s-wip-fg)'}, 'Ready':{bg:'var(--s-ready-bg)',fg:'var(--s-ready-fg)'}, 'Posted':{bg:'var(--s-posted-bg)',fg:'var(--s-posted-fg)'} };
             const s = map[p.status || 'Draft'];
-            const label = p.status === 'WIP' ? 'In Progress' : (p.status || 'Draft');
-            return `
-                <div class="status-pill" style="background:${s.bg}; color:${s.fg};" onclick="cycleStatus(event, '${p.id}')">
-                    <div class="dot" style="background:${s.fg}"></div>${label}
-                </div>
-            `;
+            return `<div class="status-pill" style="background:${s.bg}; color:${s.fg};" onclick="cycleStatus(event, '${p.id}')"><div class="dot" style="background:${s.fg}"></div>${p.status==='WIP'?'In Progress':(p.status||'Draft')}</div>`;
         }
 
         // --- ACTIONS ---
@@ -607,30 +565,24 @@
             document.getElementById('inpCaption').value = '';
             document.getElementById('inpAlt').value = '';
             document.getElementById('inpDate').value = dateStr || new Date().toISOString().split('T')[0];
-            
             const sel = document.getElementById('inpClient');
             sel.innerHTML = clients.map(c => `<option>${c}</option>`).join('');
             if(filter !== 'All Clients') sel.value = filter;
-
             document.getElementById('btnDel').style.display = 'none';
             document.getElementById('editor').classList.add('active');
             updateCount();
         }
 
         function edit(id) {
-            const p = posts.find(x => x.id === id);
-            if(!p) return;
-            editId = id;
+            const p = posts.find(x => x.id === id); if(!p) return; editId = id;
             document.getElementById('inpTitle').value = p.title;
             document.getElementById('inpLink').value = p.link || '';
             document.getElementById('inpCaption').value = p.caption;
             document.getElementById('inpAlt').value = p.alt || '';
             document.getElementById('inpDate').value = p.date;
-            
             const sel = document.getElementById('inpClient');
             sel.innerHTML = clients.map(c => `<option>${c}</option>`).join('');
             sel.value = p.client;
-
             document.getElementById('btnDel').style.display = 'block';
             document.getElementById('editor').classList.add('active');
             updateCount();
@@ -647,72 +599,30 @@
                 alt: document.getElementById('inpAlt').value,
                 status: editId ? posts.find(x=>x.id===editId).status : 'Draft'
             };
-
-            if(editId) {
-                const idx = posts.findIndex(x => x.id === editId);
-                posts[idx] = p;
-                toast('Saved');
-            } else {
-                posts.push(p);
-                toast('Created');
-            }
-            closeModal();
-            persist();
+            if(editId) posts[posts.findIndex(x=>x.id===editId)] = p; else posts.push(p);
+            closeModal(); persist(); toast('Saved');
         }
 
-        function delPost() {
-            if(confirm('Delete this campaign?')) {
-                posts = posts.filter(x => x.id !== editId);
-                closeModal();
-                persist();
-                toast('Deleted');
-            }
-        }
-
-        function cycleStatus(e, id) {
-            e.stopPropagation();
-            const idx = posts.findIndex(p => p.id === id);
-            const cycle = ['Draft', 'WIP', 'Ready', 'Posted', 'Draft'];
-            const curr = cycle.indexOf(posts[idx].status || 'Draft');
-            posts[idx].status = cycle[curr + 1] || 'Draft';
-            persist();
-        }
+        function delPost() { if(confirm('Delete?')) { posts = posts.filter(x => x.id !== editId); closeModal(); persist(); toast('Deleted'); } }
+        function cycleStatus(e, id) { e.stopPropagation(); const idx = posts.findIndex(p => p.id === id); const cycle = ['Draft', 'WIP', 'Ready', 'Posted', 'Draft']; const curr = cycle.indexOf(posts[idx].status||'Draft'); posts[idx].status = cycle[curr+1]; persist(); }
 
         // --- UTILS ---
-        function toggle(id) { 
-            const el = document.getElementById(id);
-            el.style.display = el.style.display === 'block' ? 'none' : 'block'; 
-        }
+        function toggle(id) { const el = document.getElementById(id); el.style.display = el.style.display === 'block' ? 'none' : 'block'; }
         function closeModal() { document.querySelectorAll('.overlay').forEach(o => o.classList.remove('active')); }
-        function setView(v, btn) {
-            document.querySelectorAll('.view-panel').forEach(el => el.classList.remove('active'));
-            document.getElementById('view-'+v).classList.add('active');
-            document.querySelectorAll('.switch-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
+        function setView(v, btn) { document.querySelectorAll('.view-panel').forEach(el => el.classList.remove('active')); document.getElementById('view-'+v).classList.add('active'); document.querySelectorAll('.switch-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
         function setFilter(c) { filter = c; render(); document.getElementById('clientPop').style.display = 'none'; }
         function updateCount() { document.getElementById('charCount').textContent = document.getElementById('inpCaption').value.length + ' chars'; }
         
         function openCliModal() { document.getElementById('clientPop').style.display = 'none'; document.getElementById('cliModal').classList.add('active'); renderCli(); }
-        function renderCli() {
-            document.getElementById('cliList').innerHTML = clients.map((c,i) => `
-                <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #eee;">
-                    <span style="font-weight:500; font-size:14px;">${c}</span>
-                    <span style="color:#EF4444; cursor:pointer; font-size:12px; font-weight:600;" onclick="delCli(${i})">Delete</span>
-                </div>
-            `).join('');
-        }
+        function renderCli() { document.getElementById('cliList').innerHTML = clients.map((c,i) => `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #eee;"><span style="font-weight:500;">${c}</span><span style="color:#EF4444; cursor:pointer;" onclick="delCli(${i})">Delete</span></div>`).join(''); }
         function addCli() { const n=document.getElementById('newCliName').value; if(n && !clients.includes(n)){clients.push(n); persist(); renderCli(); document.getElementById('newCliName').value='';}}
-        function delCli(i) { if(confirm('Remove client?')){clients.splice(i,1); persist(); renderCli();} }
+        function delCli(i) { if(confirm('Remove?')){clients.splice(i,1); persist(); renderCli();} }
         
         function moveMonth(n) { cDate.setMonth(cDate.getMonth()+n); render(); }
         function resetMonth() { cDate = new Date(); render(); }
-
         function esc(t) { return t ? t.replace(/</g, "&lt;") : ''; }
         function formatDate(s) { return new Date(s).toLocaleDateString('en-US', {month:'short', day:'numeric'}); }
         function toast(m) { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
-
-        // Backup
         function exportData() { const b = new Blob([JSON.stringify({posts,clients})],{type:'application/json'}); const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download='adscenes_backup.json'; a.click(); }
         function wipeData() { if(confirm('Factory Reset?')) { localStorage.clear(); location.reload(); } }
         function readFile(e) { const f=e.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=(ev)=>{ try{ const d=JSON.parse(ev.target.result); if(d.posts)posts=d.posts; if(d.clients)clients=d.clients; persist(); toast('Imported'); }catch(x){alert('Error');}}; r.readAsText(f); }
