@@ -330,13 +330,39 @@
             const pass = document.getElementById('authPass').value;
             const errBox = document.getElementById('authError');
             
-            if(!email || !pass) { errBox.innerText = "Please enter email and password."; errBox.style.display = 'block'; return; }
+            if(!email || !pass) { 
+                errBox.innerText = "Please enter both an email and password."; 
+                errBox.style.display = 'block'; 
+                return; 
+            }
 
             const promise = isSignup 
                 ? auth.createUserWithEmailAndPassword(email, pass)
                 : auth.signInWithEmailAndPassword(email, pass);
 
-            promise.catch(e => { errBox.innerText = e.message; errBox.style.display = 'block'; });
+            promise.catch(e => { 
+                let friendlyMessage = "An error occurred. Please try again.";
+                let rawError = e.message || "";
+
+                if (e.code === 'auth/user-not-found') {
+                    friendlyMessage = "Account doesn't exist. Click 'Sign Up' below.";
+                } else if (e.code === 'auth/wrong-password') {
+                    friendlyMessage = "Incorrect password. Please try again.";
+                } else if (e.code === 'auth/email-already-in-use') {
+                    friendlyMessage = "Account already exists. Try signing in instead.";
+                } else if (e.code === 'auth/weak-password') {
+                    friendlyMessage = "Password is too weak (must be at least 6 characters).";
+                } else if (e.code === 'auth/invalid-email') {
+                    friendlyMessage = "Please enter a valid email address.";
+                } else if (rawError.includes("CONFIGURATION_NOT_FOUND") || e.code === 'auth/operation-not-allowed') {
+                    friendlyMessage = "Database locked: Please enable 'Email/Password' in Firebase.";
+                } else {
+                    friendlyMessage = rawError; 
+                }
+
+                errBox.innerText = friendlyMessage; 
+                errBox.style.display = 'block'; 
+            });
         }
 
         function logout() { auth.signOut(); }
@@ -346,10 +372,8 @@
 
         function loadCloudData() {
             if(!currentUser) return;
+            if(unsubscribe) unsubscribe(); 
             
-            if(unsubscribe) unsubscribe(); // Clear old listener
-            
-            // Securely load data ONLY for the logged-in user
             unsubscribe = db.collection('users').doc(currentUser.uid).onSnapshot((doc) => {
                 if (doc.exists) {
                     const data = doc.data();
@@ -357,7 +381,7 @@
                     clients = data.clients || ['Agma Energy', 'ELURA'];
                     render();
                 } else {
-                    render(); // Render empty state, waiting for first post
+                    render(); 
                 }
             }, (error) => { console.error("Sync Error:", error); toast("Sync Error"); });
         }
@@ -403,7 +427,7 @@
             `;
         }
 
-        // --- CLIENT MANAGER (FIXED WITH RENAME) ---
+        // --- CLIENT MANAGER ---
         function openCliModal() { 
             document.getElementById('clientPop').style.display = 'none'; 
             document.getElementById('cliModal').classList.add('active'); 
@@ -427,15 +451,10 @@
         function renameCli(idx, newName) {
             newName = newName.trim();
             const oldName = clients[idx];
-            // Don't rename if empty, same as old, or already exists
             if(!newName || newName === oldName || clients.includes(newName)) { renderCli(); return; }
             
             clients[idx] = newName;
-            
-            // Auto-update all posts associated with the old client name
             posts.forEach(p => { if(p.client === oldName) p.client = newName; });
-            
-            // Update filter if we were currently filtering by the old name
             if(filter === oldName) filter = newName;
             
             persist();
@@ -463,7 +482,7 @@
                 } catch(x){ alert('Invalid Backup File'); }
             }; 
             r.readAsText(f); 
-            e.target.value = ''; // Reset input
+            e.target.value = ''; 
         }
 
         function renderRoadmap(list) {
