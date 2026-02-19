@@ -32,6 +32,13 @@
             --s-ready-bg: #ECFDF5; --s-ready-fg: #059669;
             --s-posted-bg: #EFF6FF; --s-posted-fg: #2563EB;
 
+            /* Tag Colors */
+            --t-anchor-bg: #EDE9FE; --t-anchor-fg: #6D28D9; --t-anchor-bd: #C4B5FD;
+            --t-engage-bg: #FCE7F3; --t-engage-fg: #BE185D; --t-engage-bd: #F9A8D4;
+            --t-edu-bg: #EFF6FF;    --t-edu-fg: #1D4ED8;    --t-edu-bd: #93C5FD;
+            --t-promo-bg: #ECFDF5;  --t-promo-fg: #047857;  --t-promo-bd: #6EE7B7;
+            --t-std-bg: #F3F4F6;    --t-std-fg: #4B5563;    --t-std-bd: #D1D5DB;
+
             --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             --shadow-float: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
             --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
@@ -82,6 +89,9 @@
         .view-panel.active { display: block; }
         @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
+        /* TAG BADGE */
+        .tag-badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid transparent; margin-bottom: 6px; }
+
         /* LIST VIEW */
         .data-table { width: 100%; border-collapse: collapse; background: var(--bg-surface); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border); }
         .data-table th { text-align: left; padding: 16px 24px; font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); background: #F9FAFB; }
@@ -105,10 +115,10 @@
         .col-backlog .col-header { border-color: #E5E7EB; } .col-week .col-header { border-color: #3B82F6; } .col-next .col-header { border-color: #8B5CF6; } .col-future .col-header { border-color: #10B981; }
         .col-title { font-size: 14px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.05em; }
         .col-count { font-size: 12px; font-weight: 600; color: var(--text-light); background: #E5E7EB; padding: 2px 8px; border-radius: 10px; }
-        .road-card { background: white; border-radius: 12px; border: 1px solid var(--border); padding: 16px; box-shadow: var(--shadow-sm); cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; gap: 10px; }
+        .road-card { background: white; border-radius: 12px; border: 1px solid var(--border); padding: 16px; box-shadow: var(--shadow-sm); cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; gap: 6px; }
         .road-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-float); border-color: #D1D5DB; }
         .road-card.no-date { border-style: dashed; } 
-        .card-meta { display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text-muted); font-weight: 600; }
+        .card-meta { display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
         .card-title { font-size: 14px; font-weight: 600; color: var(--text-main); line-height: 1.4; }
         .card-snippet { font-size: 12px; color: var(--text-muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .empty-zone { border: 2px dashed #E5E7EB; border-radius: 12px; height: 100px; display: flex; align-items: center; justify-content: center; color: var(--text-light); font-size: 13px; font-weight: 500; }
@@ -117,17 +127,14 @@
         .cal-frame { background: white; border-radius: 20px; border: 1px solid var(--border); padding: 24px; box-shadow: var(--shadow-sm); }
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         .cal-title { font-size: 18px; font-weight: 700; }
-        
-        /* THE FIX: minmax(0, 1fr) locks the grid structure and prevents blowout */
         .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); width: 100%; border-top: 1px solid var(--border); border-left: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
         .cal-head-cell { background: #F9FAFB; padding: 12px; text-align: center; font-size: 11px; font-weight: 700; color: var(--text-muted); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-        
-        /* THE FIX: min-width: 0 allows the ellipsis to work inside a grid child */
         .cal-cell { min-width: 0; background: white; min-height: 140px; padding: 10px; cursor: pointer; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); transition: background 0.1s; display: flex; flex-direction: column; }
         .cal-cell:hover { background: #F9FAFB; }
         .cal-num { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
         .cal-cell.today .cal-num { background: var(--text-main); color: white; }
-        .cal-event { max-width: 100%; display: block; background: var(--brand-subtle); color: var(--brand); padding: 3px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-left: 2px solid var(--brand); }
+        .cal-event { max-width: 100%; display: block; padding: 4px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-left-width: 3px; border-left-style: solid; border-top: 1px solid transparent; border-right: 1px solid transparent; border-bottom: 1px solid transparent; transition: filter 0.2s; }
+        .cal-event:hover { filter: brightness(0.95); }
 
         /* --- MODALS --- */
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(12px); z-index: 500; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
@@ -246,9 +253,21 @@
                 <button class="modal-close" onclick="closeModal()"><svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
             </div>
             <div class="modal-body">
-                <div class="field">
-                    <label class="field-label">Campaign Title</label>
-                    <input type="text" id="inpTitle" class="studio-input" placeholder="e.g. Summer Launch v2" autofocus>
+                <div class="field-row" style="margin-bottom: 24px;">
+                    <div class="field-col" style="flex: 2;">
+                        <label class="field-label">Campaign Title</label>
+                        <input type="text" id="inpTitle" class="studio-input" placeholder="e.g. Summer Launch v2" autofocus>
+                    </div>
+                    <div class="field-col" style="flex: 1;">
+                        <label class="field-label">Content Tag</label>
+                        <select id="inpType" class="studio-input" style="-webkit-appearance:none; cursor:pointer; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%236B7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                            <option value="Standard">Standard</option>
+                            <option value="Anchor">Anchor Post</option>
+                            <option value="Engagement">Engagement</option>
+                            <option value="Educational">Educational</option>
+                            <option value="Promotional">Promotional</option>
+                        </select>
+                    </div>
                 </div>
                 
                 <div class="field">
@@ -448,6 +467,26 @@
         }
 
         // ==========================================
+        // COLOR & TAGGING SYSTEM
+        // ==========================================
+        function getTagStyles(type) {
+            const map = {
+                'Anchor': { bg: 'var(--t-anchor-bg)', fg: 'var(--t-anchor-fg)', bd: 'var(--t-anchor-bd)' },
+                'Engagement': { bg: 'var(--t-engage-bg)', fg: 'var(--t-engage-fg)', bd: 'var(--t-engage-bd)' },
+                'Educational': { bg: 'var(--t-edu-bg)', fg: 'var(--t-edu-fg)', bd: 'var(--t-edu-bd)' },
+                'Promotional': { bg: 'var(--t-promo-bg)', fg: 'var(--t-promo-fg)', bd: 'var(--t-promo-bd)' },
+                'Standard': { bg: 'var(--t-std-bg)', fg: 'var(--t-std-fg)', bd: 'var(--t-std-bd)' }
+            };
+            return map[type] || map['Standard'];
+        }
+
+        function renderTagBadge(type) {
+            if (!type || type === 'Standard') return '';
+            const style = getTagStyles(type);
+            return `<span class="tag-badge" style="background:${style.bg}; color:${style.fg}; border-color:${style.bd};">${type}</span>`;
+        }
+
+        // ==========================================
         // RENDER ENGINE
         // ==========================================
         function render() {
@@ -471,6 +510,7 @@
                 tbody.innerHTML = visible.map(p => `
                     <tr onclick="edit('${p.id}')">
                         <td>
+                            ${renderTagBadge(p.type)}
                             <div class="cell-main">${esc(p.title)}</div>
                             <div class="cell-sub">${esc(p.caption) || 'No caption'}</div>
                         </td>
@@ -486,10 +526,7 @@
         }
 
         function renderRoadmap(list) {
-            const backlog = [];
-            const thisWeek = [];
-            const nextWeek = [];
-            const future = [];
+            const backlog = [], thisWeek = [], nextWeek = [], future = [];
             
             const today = new Date(); 
             const currentWeekEnd = new Date(today); 
@@ -499,18 +536,11 @@
             nextWeekEnd.setDate(currentWeekEnd.getDate() + 7);
             
             list.forEach(p => {
-                if (!p.date) { 
-                    backlog.push(p); 
-                    return; 
-                }
+                if (!p.date) { backlog.push(p); return; }
                 const d = new Date(p.date);
-                if (d <= currentWeekEnd) {
-                    thisWeek.push(p); 
-                } else if (d <= nextWeekEnd) {
-                    nextWeek.push(p); 
-                } else {
-                    future.push(p);
-                }
+                if (d <= currentWeekEnd) { thisWeek.push(p); } 
+                else if (d <= nextWeekEnd) { nextWeek.push(p); } 
+                else { future.push(p); }
             });
             
             const cols = [ 
@@ -526,16 +556,22 @@
                         <div class="col-title">${col.title}</div>
                         <div class="col-count">${col.list.length}</div>
                     </div>
-                    ${col.list.length ? col.list.map(p => `
-                        <div class="road-card ${!p.date ? 'no-date' : ''}" onclick="edit('${p.id}')">
+                    ${col.list.length ? col.list.map(p => {
+                        const style = getTagStyles(p.type || 'Standard');
+                        const borderStyle = (p.type && p.type !== 'Standard') ? `border-top: 3px solid ${style.fg};` : '';
+                        
+                        return `
+                        <div class="road-card ${!p.date ? 'no-date' : ''}" style="${borderStyle}" onclick="edit('${p.id}')">
                             <div class="card-meta">
                                 <span>${p.date ? formatDate(p.date) : 'No Date'}</span>
                                 ${p.status === 'Ready' ? '<span style="color:#059669;">Ready</span>' : ''}
                             </div>
+                            ${renderTagBadge(p.type)}
                             <div class="card-title">${esc(p.title)}</div>
                             <div class="card-snippet">${esc(p.caption) || 'No caption'}</div>
                         </div>
-                    `).join('') : '<div class="empty-zone">Empty</div>'}
+                        `;
+                    }).join('') : '<div class="empty-zone">Empty</div>'}
                 </div>
             `).join('');
         }
@@ -549,7 +585,6 @@
             const first = new Date(y, m, 1).getDay(); 
             const days = new Date(y, m + 1, 0).getDate(); 
             
-            // Generate current date locally to compare against calendar cells
             const tzOffset = (new Date()).getTimezoneOffset() * 60000;
             const todayISO = (new Date(Date.now() - tzOffset)).toISOString().split('T')[0];
             
@@ -561,12 +596,21 @@
             
             for (let d = 1; d <= days; d++) { 
                 const iso = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`; 
-                // Using startsWith allows it to match datetime strings like '2026-02-23T14:30'
                 const has = list.filter(p => p.date && p.date.startsWith(iso)); 
+                
                 html += `
                     <div class="cal-cell ${iso === todayISO ? 'today' : ''}" onclick="openModal('${iso}')">
                         <div class="cal-num">${d}</div>
-                        ${has.map(p => `<div class="cal-event">${esc(p.title)}</div>`).join('')}
+                        ${has.map(p => {
+                            const style = getTagStyles(p.type || 'Standard');
+                            // THE FIX: Adding event.stopPropagation() stops the click from hitting the openModal cell underneath
+                            return `
+                            <div class="cal-event" 
+                                 style="background:${style.bg}; color:${style.fg}; border-left-color:${style.fg}; border-color:${style.bd} ${style.bd} ${style.bd} ${style.fg};" 
+                                 onclick="event.stopPropagation(); edit('${p.id}')">
+                                 ${esc(p.title)}
+                            </div>`;
+                        }).join('')}
                     </div>
                 `; 
             }
@@ -645,9 +689,7 @@
                 if (p.client === oldName) p.client = newName; 
             });
             
-            if (filter === oldName) {
-                filter = newName;
-            }
+            if (filter === oldName) { filter = newName; }
             
             persist();
             renderCli();
@@ -682,25 +724,18 @@
                 try { 
                     const data = JSON.parse(event.target.result); 
                     
-                    // STRICT APPEND: Posts
                     if (data.posts && Array.isArray(data.posts)) {
                         data.posts.forEach(newPost => {
-                            if (!newPost.id) {
-                                newPost.id = 'post_' + Date.now() + Math.floor(Math.random() * 1000);
-                            }
-                            if (!newPost.status) {
-                                newPost.status = 'Draft';
-                            }
+                            if (!newPost.id) { newPost.id = 'post_' + Date.now() + Math.floor(Math.random() * 1000); }
+                            if (!newPost.status) { newPost.status = 'Draft'; }
+                            if (!newPost.type) { newPost.type = 'Standard'; }
                             posts.push(newPost);
                         });
                     }
                     
-                    // STRICT MERGE: Clients
                     if (data.clients && Array.isArray(data.clients)) {
                         data.clients.forEach(newClient => {
-                            if (!clients.includes(newClient)) {
-                                clients.push(newClient);
-                            }
+                            if (!clients.includes(newClient)) { clients.push(newClient); }
                         });
                     }
                     
@@ -728,8 +763,6 @@
         // ==========================================
         // POST EDITOR & ACTIONS
         // ==========================================
-        
-        // Helper to format proper local datetime strings for inputs
         function getLocalIsoDatetime(dateObj) {
             const tzOffset = dateObj.getTimezoneOffset() * 60000;
             return (new Date(dateObj - tzOffset)).toISOString().slice(0, 16);
@@ -739,23 +772,19 @@
             editId = null; 
             
             document.getElementById('inpTitle').value = ''; 
+            document.getElementById('inpType').value = 'Standard'; 
             document.getElementById('inpCaption').value = ''; 
             document.getElementById('inpAlt').value = ''; 
             document.getElementById('inpLink').value = ''; 
             
-            // Set default date, append T12:00 if clicked directly from a calendar cell (which only passes YYYY-MM-DD)
             let defaultDate = getLocalIsoDatetime(new Date());
-            if (dateStr) {
-                defaultDate = dateStr + 'T12:00';
-            }
+            if (dateStr) { defaultDate = dateStr + 'T12:00'; }
             document.getElementById('inpDate').value = defaultDate; 
             
             const sel = document.getElementById('inpClient'); 
             sel.innerHTML = clients.map(c => `<option>${c}</option>`).join(''); 
             
-            if (filter !== 'All Clients') {
-                sel.value = filter; 
-            }
+            if (filter !== 'All Clients') { sel.value = filter; }
             
             document.getElementById('btnDel').style.display = 'none'; 
             document.getElementById('editor').classList.add('active'); 
@@ -769,15 +798,13 @@
             editId = id; 
             
             document.getElementById('inpTitle').value = p.title; 
+            document.getElementById('inpType').value = p.type || 'Standard'; 
             document.getElementById('inpCaption').value = p.caption || ''; 
             document.getElementById('inpAlt').value = p.alt || ''; 
             document.getElementById('inpLink').value = p.link || ''; 
             
-            // Ensure old posts with only 'YYYY-MM-DD' don't break the new datetime-local input format
             let dVal = p.date || '';
-            if (dVal && dVal.length === 10) {
-                dVal += 'T12:00';
-            }
+            if (dVal && dVal.length === 10) { dVal += 'T12:00'; }
             document.getElementById('inpDate').value = dVal; 
             
             const sel = document.getElementById('inpClient'); 
@@ -793,6 +820,7 @@
             const p = { 
                 id: editId || 'post_' + Date.now(), 
                 title: document.getElementById('inpTitle').value, 
+                type: document.getElementById('inpType').value,
                 caption: document.getElementById('inpCaption').value, 
                 alt: document.getElementById('inpAlt').value, 
                 link: document.getElementById('inpLink').value, 
@@ -801,11 +829,8 @@
                 status: editId ? posts.find(x => x.id === editId).status : 'Draft' 
             }; 
             
-            if (editId) {
-                posts[posts.findIndex(x => x.id === editId)] = p; 
-            } else {
-                posts.push(p); 
-            }
+            if (editId) { posts[posts.findIndex(x => x.id === editId)] = p; } 
+            else { posts.push(p); }
             
             closeModal(); 
             persist(); 
@@ -823,11 +848,9 @@
 
         function cycleStatus(e, id) { 
             e.stopPropagation(); 
-            
             const idx = posts.findIndex(p => p.id === id); 
             const cycle = ['Draft', 'WIP', 'Ready', 'Posted', 'Draft']; 
             const curr = cycle.indexOf(posts[idx].status || 'Draft'); 
-            
             posts[idx].status = cycle[curr + 1]; 
             persist(); 
         }
@@ -847,7 +870,6 @@
         function setView(viewName, btn) { 
             document.querySelectorAll('.view-panel').forEach(el => el.classList.remove('active')); 
             document.getElementById('view-' + viewName).classList.add('active'); 
-            
             document.querySelectorAll('.switch-btn').forEach(b => b.classList.remove('active')); 
             btn.classList.add('active'); 
         }
@@ -894,7 +916,6 @@
             setTimeout(() => t.classList.remove('show'), 2000); 
         }
 
-        // Global click to close popovers
         window.onclick = (e) => { 
             if (!e.target.closest('.actions')) {
                 document.querySelectorAll('.popover').forEach(el => el.style.display = 'none'); 
