@@ -283,7 +283,9 @@
     <input type="file" id="file" hidden accept=".json" onchange="importData(event)">
 
     <script>
-        // --- FIREBASE INITIALIZATION ---
+        // ==========================================
+        // FIREBASE INITIALIZATION
+        // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyDvrE92N_kMbIA8gIO0a0dcYx7-ZUmr7mA",
             authDomain: "adscenes-content.firebaseapp.com",
@@ -293,11 +295,16 @@
             appId: "1:613616055800:web:20fcbe7a3370d5b521120d"
         };
         
-        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        if (!firebase.apps.length) { 
+            firebase.initializeApp(firebaseConfig); 
+        }
+        
         const db = firebase.firestore();
         const auth = firebase.auth();
 
-        // --- APP STATE ---
+        // ==========================================
+        // APP STATE
+        // ==========================================
         let posts = [];
         let clients = ['Agma Energy', 'ELURA'];
         let filter = 'All Clients';
@@ -305,8 +312,11 @@
         let cDate = new Date();
         let currentUser = null;
         let isSignup = false;
+        let unsubscribe = null;
 
-        // --- AUTHENTICATION ENGINE ---
+        // ==========================================
+        // AUTHENTICATION ENGINE
+        // ==========================================
         auth.onAuthStateChanged((user) => {
             if (user) {
                 currentUser = user;
@@ -330,7 +340,7 @@
             const pass = document.getElementById('authPass').value;
             const errBox = document.getElementById('authError');
             
-            if(!email || !pass) { 
+            if (!email || !pass) { 
                 errBox.innerText = "Please enter both an email and password."; 
                 errBox.style.display = 'block'; 
                 return; 
@@ -365,14 +375,19 @@
             });
         }
 
-        function logout() { auth.signOut(); }
+        function logout() { 
+            auth.signOut(); 
+        }
 
-        // --- CLOUD SYNC ENGINE ---
-        let unsubscribe = null;
-
+        // ==========================================
+        // CLOUD SYNC ENGINE
+        // ==========================================
         function loadCloudData() {
-            if(!currentUser) return;
-            if(unsubscribe) unsubscribe(); 
+            if (!currentUser) return;
+            
+            if (unsubscribe) {
+                unsubscribe(); 
+            }
             
             unsubscribe = db.collection('users').doc(currentUser.uid).onSnapshot((doc) => {
                 if (doc.exists) {
@@ -383,41 +398,150 @@
                 } else {
                     render(); 
                 }
-            }, (error) => { console.error("Sync Error:", error); toast("Sync Error"); });
+            }, (error) => { 
+                console.error("Sync Error:", error); 
+                toast("Sync Error"); 
+            });
         }
 
         function persist() {
-            if(!currentUser) return;
+            if (!currentUser) return;
+            
             render(); 
-            db.collection('users').doc(currentUser.uid).set({ posts: posts, clients: clients })
-              .catch(e => { console.error("Save error:", e); toast("Failed to save"); });
+            
+            db.collection('users').doc(currentUser.uid).set({ 
+                posts: posts, 
+                clients: clients 
+            }).catch(e => { 
+                console.error("Save error:", e); 
+                toast("Failed to save"); 
+            });
         }
 
-        // --- RENDER ENGINE ---
+        // ==========================================
+        // RENDER ENGINE
+        // ==========================================
         function render() {
             const visible = filter === 'All Clients' ? posts : posts.filter(p => p.client === filter);
+            
             document.getElementById('subtitle').innerText = `${visible.length} Active Campaigns`;
             document.getElementById('currentClient').innerText = filter;
 
-            // 1. LIST VIEW
+            renderListView(visible);
+            renderRoadmap(visible);
+            renderCal(visible);
+            renderClientDropdown();
+        }
+
+        function renderListView(visible) {
             const tbody = document.getElementById('listBody');
-            if(visible.length === 0) {
+            
+            if (visible.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:60px; color:var(--text-light);">No campaigns found. Let's create one.</td></tr>`;
             } else {
                 tbody.innerHTML = visible.map(p => `
                     <tr onclick="edit('${p.id}')">
-                        <td><div class="cell-main">${esc(p.title)}</div><div class="cell-sub">${esc(p.caption) || 'No caption'}</div></td>
+                        <td>
+                            <div class="cell-main">${esc(p.title)}</div>
+                            <div class="cell-sub">${esc(p.caption) || 'No caption'}</div>
+                        </td>
                         <td>${getStatusBadge(p)}</td>
                         <td>${esc(p.client)}</td>
-                        <td>${p.link ? `<a href="${p.link}" target="_blank" onclick="event.stopPropagation()" class="asset-btn"><svg class="icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>Asset</a>` : '<span style="color:#E5E7EB">—</span>'}</td>
+                        <td>
+                            ${p.link ? `<a href="${p.link}" target="_blank" onclick="event.stopPropagation()" class="asset-btn"><svg class="icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>Asset</a>` : '<span style="color:#E5E7EB">—</span>'}
+                        </td>
                         <td style="text-align:right; font-family:'SF Mono', monospace; font-size:12px; color:var(--text-muted);">${formatDate(p.date)}</td>
                     </tr>
                 `).join('');
             }
+        }
 
-            renderRoadmap(visible);
-            renderCal(visible);
+        function renderRoadmap(list) {
+            const backlog = [];
+            const thisWeek = [];
+            const nextWeek = [];
+            const future = [];
+            
+            const today = new Date(); 
+            const currentWeekEnd = new Date(today); 
+            currentWeekEnd.setDate(today.getDate() + (7 - today.getDay())); 
+            
+            const nextWeekEnd = new Date(currentWeekEnd); 
+            nextWeekEnd.setDate(currentWeekEnd.getDate() + 7);
+            
+            list.forEach(p => {
+                if (!p.date) { 
+                    backlog.push(p); 
+                    return; 
+                }
+                const d = new Date(p.date);
+                if (d <= currentWeekEnd) {
+                    thisWeek.push(p); 
+                } else if (d <= nextWeekEnd) {
+                    nextWeek.push(p); 
+                } else {
+                    future.push(p);
+                }
+            });
+            
+            const cols = [ 
+                { title: "Backlog / Ideas", list: backlog, cls: "col-backlog" }, 
+                { title: "This Week", list: thisWeek, cls: "col-week" }, 
+                { title: "Next Week", list: nextWeek, cls: "col-next" }, 
+                { title: "The Future", list: future, cls: "col-future" } 
+            ];
+            
+            document.getElementById('roadmapGrid').innerHTML = cols.map(col => `
+                <div class="roadmap-col ${col.cls}">
+                    <div class="col-header">
+                        <div class="col-title">${col.title}</div>
+                        <div class="col-count">${col.list.length}</div>
+                    </div>
+                    ${col.list.length ? col.list.map(p => `
+                        <div class="road-card ${!p.date ? 'no-date' : ''}" onclick="edit('${p.id}')">
+                            <div class="card-meta">
+                                <span>${p.date ? formatDate(p.date) : 'No Date'}</span>
+                                ${p.status === 'Ready' ? '<span style="color:#059669;">Ready</span>' : ''}
+                            </div>
+                            <div class="card-title">${esc(p.title)}</div>
+                            <div class="card-snippet">${esc(p.caption) || 'No caption'}</div>
+                        </div>
+                    `).join('') : '<div class="empty-zone">Empty</div>'}
+                </div>
+            `).join('');
+        }
 
+        function renderCal(list) {
+            const mNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            document.getElementById('calTitle').innerText = `${mNames[cDate.getMonth()]} ${cDate.getFullYear()}`;
+            
+            const y = cDate.getFullYear();
+            const m = cDate.getMonth(); 
+            const first = new Date(y, m, 1).getDay(); 
+            const days = new Date(y, m + 1, 0).getDate(); 
+            const today = new Date().toISOString().split('T')[0];
+            
+            let html = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d => `<div class="cal-head-cell">${d}</div>`).join('');
+            
+            for (let i = 0; i < first; i++) {
+                html += `<div class="cal-cell" style="background:#F9FAFB;"></div>`;
+            }
+            
+            for (let d = 1; d <= days; d++) { 
+                const iso = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`; 
+                const has = list.filter(p => p.date === iso); 
+                html += `
+                    <div class="cal-cell ${iso === today ? 'today' : ''}" onclick="openModal('${iso}')">
+                        <div class="cal-num">${d}</div>
+                        ${has.map(p => `<div class="cal-event">${esc(p.title)}</div>`).join('')}
+                    </div>
+                `; 
+            }
+            
+            document.getElementById('calGrid').innerHTML = html;
+        }
+
+        function renderClientDropdown() {
             document.getElementById('clientPop').innerHTML = `
                 <div class="pop-item" style="color:var(--brand); font-weight:600;" onclick="setFilter('All Clients')">All Clients</div>
                 <div style="height:1px; background:var(--border); margin:4px 0;"></div>
@@ -427,7 +551,27 @@
             `;
         }
 
-        // --- CLIENT MANAGER ---
+        function getStatusBadge(p) {
+            const map = { 
+                'Draft': { bg: 'var(--s-draft-bg)', fg: 'var(--s-draft-fg)' }, 
+                'WIP': { bg: 'var(--s-wip-bg)', fg: 'var(--s-wip-fg)' }, 
+                'Ready': { bg: 'var(--s-ready-bg)', fg: 'var(--s-ready-fg)' }, 
+                'Posted': { bg: 'var(--s-posted-bg)', fg: 'var(--s-posted-fg)' } 
+            };
+            const s = map[p.status || 'Draft'];
+            const displayStatus = p.status === 'WIP' ? 'In Progress' : (p.status || 'Draft');
+            
+            return `
+                <div class="status-pill" style="background:${s.bg}; color:${s.fg};" onclick="cycleStatus(event, '${p.id}')">
+                    <div class="dot" style="background:${s.fg}"></div>
+                    ${displayStatus}
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // CLIENT MANAGER
+        // ==========================================
         function openCliModal() { 
             document.getElementById('clientPop').style.display = 'none'; 
             document.getElementById('cliModal').classList.add('active'); 
@@ -435,7 +579,7 @@
         }
 
         function renderCli() { 
-            document.getElementById('cliList').innerHTML = clients.map((c,i) => `
+            document.getElementById('cliList').innerHTML = clients.map((c, i) => `
                 <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #eee;">
                     <input type="text" class="studio-input" style="padding:8px 12px; background:transparent; border:1px solid transparent; width:70%; font-weight:600;" value="${esc(c)}" onchange="renameCli(${i}, this.value)" title="Click to rename">
                     <span style="color:#EF4444; cursor:pointer; font-size:12px; font-weight:600; padding:8px;" onclick="delCli(${i})">Delete</span>
@@ -444,94 +588,264 @@
         }
 
         function addCli() { 
-            const n = document.getElementById('newCliName').value.trim(); 
-            if(n && !clients.includes(n)){ clients.push(n); persist(); renderCli(); document.getElementById('newCliName').value=''; }
+            const newName = document.getElementById('newCliName').value.trim(); 
+            if (newName && !clients.includes(newName)) { 
+                clients.push(newName); 
+                persist(); 
+                renderCli(); 
+                document.getElementById('newCliName').value = ''; 
+            }
         }
 
         function renameCli(idx, newName) {
             newName = newName.trim();
             const oldName = clients[idx];
-            if(!newName || newName === oldName || clients.includes(newName)) { renderCli(); return; }
+            
+            if (!newName || newName === oldName || clients.includes(newName)) { 
+                renderCli(); 
+                return; 
+            }
             
             clients[idx] = newName;
-            posts.forEach(p => { if(p.client === oldName) p.client = newName; });
-            if(filter === oldName) filter = newName;
+            
+            posts.forEach(p => { 
+                if (p.client === oldName) p.client = newName; 
+            });
+            
+            if (filter === oldName) {
+                filter = newName;
+            }
             
             persist();
             renderCli();
             toast('Client Renamed');
         }
 
-        function delCli(i) { 
-            const name = clients[i];
+        function delCli(idx) { 
+            const name = clients[idx];
             const hasPosts = posts.some(p => p.client === name);
-            if(hasPosts) { alert(`Cannot delete "${name}" because they have active campaigns. Reassign or delete the campaigns first.`); return; }
-            if(confirm('Remove client?')) { clients.splice(i,1); persist(); renderCli(); } 
+            
+            if (hasPosts) { 
+                alert(`Cannot delete "${name}" because they have active campaigns. Reassign or delete the campaigns first.`); 
+                return; 
+            }
+            
+            if (confirm('Remove client?')) { 
+                clients.splice(idx, 1); 
+                persist(); 
+                renderCli(); 
+            } 
         }
 
-        // --- HELPERS & IMPORTS ---
+        // ==========================================
+        // IMPORT / EXPORT ENGINE
+        // ==========================================
         function importData(e) { 
-            const f = e.target.files[0]; if(!f) return; 
-            const r = new FileReader(); 
-            r.onload = (ev) => { 
+            const file = e.target.files[0]; 
+            if (!file) return; 
+            
+            const reader = new FileReader(); 
+            reader.onload = (event) => { 
                 try { 
-                    const d = JSON.parse(ev.target.result); 
-                    if(d.posts) posts = d.posts; 
-                    if(d.clients) clients = d.clients; 
-                    persist(); toast('Backup Imported & Synced'); 
-                } catch(x){ alert('Invalid Backup File'); }
+                    const data = JSON.parse(event.target.result); 
+                    
+                    // STRICT APPEND: Posts
+                    if (data.posts && Array.isArray(data.posts)) {
+                        data.posts.forEach(newPost => {
+                            // Ensure a unique ID so existing posts aren't overwritten
+                            if (!newPost.id) {
+                                newPost.id = 'post_' + Date.now() + Math.floor(Math.random() * 1000);
+                            }
+                            // Enforce strict status
+                            if (!newPost.status) {
+                                newPost.status = 'Draft';
+                            }
+                            // Push to existing workspace
+                            posts.push(newPost);
+                        });
+                    }
+                    
+                    // STRICT MERGE: Clients
+                    if (data.clients && Array.isArray(data.clients)) {
+                        data.clients.forEach(newClient => {
+                            // Only add the client if they don't already exist
+                            if (!clients.includes(newClient)) {
+                                clients.push(newClient);
+                            }
+                        });
+                    }
+                    
+                    persist(); 
+                    toast('Bulk Import Appended & Synced'); 
+                    
+                } catch(error) { 
+                    console.error("Import Error:", error);
+                    alert('Invalid file structure. Ensure it is plain text (.json) and strictly formatted.'); 
+                }
             }; 
-            r.readAsText(f); 
+            reader.readAsText(file); 
             e.target.value = ''; 
         }
 
-        function renderRoadmap(list) {
-            const backlog = [], thisWeek = [], nextWeek = [], future = [];
-            const today = new Date(); const currentWeekEnd = new Date(today); currentWeekEnd.setDate(today.getDate() + (7 - today.getDay())); const nextWeekEnd = new Date(currentWeekEnd); nextWeekEnd.setDate(currentWeekEnd.getDate() + 7);
-            list.forEach(p => {
-                if(!p.date) { backlog.push(p); return; }
-                const d = new Date(p.date);
-                if(d <= currentWeekEnd) thisWeek.push(p); else if(d <= nextWeekEnd) nextWeek.push(p); else future.push(p);
-            });
-            const cols = [ { title: "Backlog / Ideas", list: backlog, cls: "col-backlog" }, { title: "This Week", list: thisWeek, cls: "col-week" }, { title: "Next Week", list: nextWeek, cls: "col-next" }, { title: "The Future", list: future, cls: "col-future" } ];
-            document.getElementById('roadmapGrid').innerHTML = cols.map(col => `<div class="roadmap-col ${col.cls}"><div class="col-header"><div class="col-title">${col.title}</div><div class="col-count">${col.list.length}</div></div>${col.list.length ? col.list.map(p => `<div class="road-card ${!p.date?'no-date':''}" onclick="edit('${p.id}')"><div class="card-meta"><span>${p.date ? formatDate(p.date) : 'No Date'}</span>${p.status === 'Ready' ? '<span style="color:#059669;">Ready</span>' : ''}</div><div class="card-title">${esc(p.title)}</div><div class="card-snippet">${esc(p.caption) || 'No caption'}</div></div>`).join('') : '<div class="empty-zone">Empty</div>'}</div>`).join('');
+        function exportData() { 
+            const blob = new Blob([JSON.stringify({ posts, clients })], { type: 'application/json' }); 
+            const url = URL.createObjectURL(blob); 
+            const anchor = document.createElement('a'); 
+            anchor.href = url; 
+            anchor.download = 'adscenes_backup.json'; 
+            anchor.click(); 
         }
 
-        function renderCal(list) {
-            const mNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            document.getElementById('calTitle').innerText = `${mNames[cDate.getMonth()]} ${cDate.getFullYear()}`;
-            const y = cDate.getFullYear(), m = cDate.getMonth(); const first = new Date(y, m, 1).getDay(); const days = new Date(y, m + 1, 0).getDate(); const today = new Date().toISOString().split('T')[0];
-            let html = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d => `<div class="cal-head-cell">${d}</div>`).join('');
-            for(let i=0; i<first; i++) html += `<div class="cal-cell" style="background:#F9FAFB;"></div>`;
-            for(let d=1; d<=days; d++) { const iso = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; const has = list.filter(p => p.date === iso); html += `<div class="cal-cell ${iso===today?'today':''}" onclick="openModal('${iso}')"><div class="cal-num">${d}</div>${has.map(p => `<div class="cal-event">${esc(p.title)}</div>`).join('')}</div>`; }
-            document.getElementById('calGrid').innerHTML = html;
+        // ==========================================
+        // POST EDITOR & ACTIONS
+        // ==========================================
+        function openModal(dateStr = null) { 
+            editId = null; 
+            
+            document.getElementById('inpTitle').value = ''; 
+            document.getElementById('inpLink').value = ''; 
+            document.getElementById('inpCaption').value = ''; 
+            document.getElementById('inpAlt').value = ''; 
+            document.getElementById('inpDate').value = dateStr || new Date().toISOString().split('T')[0]; 
+            
+            const sel = document.getElementById('inpClient'); 
+            sel.innerHTML = clients.map(c => `<option>${c}</option>`).join(''); 
+            
+            if (filter !== 'All Clients') {
+                sel.value = filter; 
+            }
+            
+            document.getElementById('btnDel').style.display = 'none'; 
+            document.getElementById('editor').classList.add('active'); 
+            updateCount(); 
         }
 
-        function getStatusBadge(p) {
-            const map = { 'Draft':{bg:'var(--s-draft-bg)',fg:'var(--s-draft-fg)'}, 'WIP':{bg:'var(--s-wip-bg)',fg:'var(--s-wip-fg)'}, 'Ready':{bg:'var(--s-ready-bg)',fg:'var(--s-ready-fg)'}, 'Posted':{bg:'var(--s-posted-bg)',fg:'var(--s-posted-fg)'} };
-            const s = map[p.status || 'Draft'];
-            return `<div class="status-pill" style="background:${s.bg}; color:${s.fg};" onclick="cycleStatus(event, '${p.id}')"><div class="dot" style="background:${s.fg}"></div>${p.status==='WIP'?'In Progress':(p.status||'Draft')}</div>`;
+        function edit(id) { 
+            const p = posts.find(x => x.id === id); 
+            if (!p) return; 
+            
+            editId = id; 
+            
+            document.getElementById('inpTitle').value = p.title; 
+            document.getElementById('inpLink').value = p.link || ''; 
+            document.getElementById('inpCaption').value = p.caption; 
+            document.getElementById('inpAlt').value = p.alt || ''; 
+            document.getElementById('inpDate').value = p.date || ''; 
+            
+            const sel = document.getElementById('inpClient'); 
+            sel.innerHTML = clients.map(c => `<option>${c}</option>`).join(''); 
+            sel.value = p.client; 
+            
+            document.getElementById('btnDel').style.display = 'block'; 
+            document.getElementById('editor').classList.add('active'); 
+            updateCount(); 
         }
 
-        function openModal(dateStr = null) { editId = null; document.getElementById('inpTitle').value = ''; document.getElementById('inpLink').value = ''; document.getElementById('inpCaption').value = ''; document.getElementById('inpAlt').value = ''; document.getElementById('inpDate').value = dateStr || new Date().toISOString().split('T')[0]; const sel = document.getElementById('inpClient'); sel.innerHTML = clients.map(c => `<option>${c}</option>`).join(''); if(filter !== 'All Clients') sel.value = filter; document.getElementById('btnDel').style.display = 'none'; document.getElementById('editor').classList.add('active'); updateCount(); }
-        function edit(id) { const p = posts.find(x => x.id === id); if(!p) return; editId = id; document.getElementById('inpTitle').value = p.title; document.getElementById('inpLink').value = p.link || ''; document.getElementById('inpCaption').value = p.caption; document.getElementById('inpAlt').value = p.alt || ''; document.getElementById('inpDate').value = p.date || ''; const sel = document.getElementById('inpClient'); sel.innerHTML = clients.map(c => `<option>${c}</option>`).join(''); sel.value = p.client; document.getElementById('btnDel').style.display = 'block'; document.getElementById('editor').classList.add('active'); updateCount(); }
-        function saveData() { const p = { id: editId || 'post_' + Date.now(), title: document.getElementById('inpTitle').value, client: document.getElementById('inpClient').value, date: document.getElementById('inpDate').value, link: document.getElementById('inpLink').value, caption: document.getElementById('inpCaption').value, alt: document.getElementById('inpAlt').value, status: editId ? posts.find(x=>x.id===editId).status : 'Draft' }; if(editId) posts[posts.findIndex(x=>x.id===editId)] = p; else posts.push(p); closeModal(); persist(); toast('Saved'); }
-        function delPost() { if(confirm('Delete?')) { posts = posts.filter(x => x.id !== editId); closeModal(); persist(); toast('Deleted'); } }
-        function cycleStatus(e, id) { e.stopPropagation(); const idx = posts.findIndex(p => p.id === id); const cycle = ['Draft', 'WIP', 'Ready', 'Posted', 'Draft']; const curr = cycle.indexOf(posts[idx].status||'Draft'); posts[idx].status = cycle[curr+1]; persist(); }
+        function saveData() { 
+            const p = { 
+                id: editId || 'post_' + Date.now(), 
+                title: document.getElementById('inpTitle').value, 
+                client: document.getElementById('inpClient').value, 
+                date: document.getElementById('inpDate').value, 
+                link: document.getElementById('inpLink').value, 
+                caption: document.getElementById('inpCaption').value, 
+                alt: document.getElementById('inpAlt').value, 
+                status: editId ? posts.find(x => x.id === editId).status : 'Draft' 
+            }; 
+            
+            if (editId) {
+                posts[posts.findIndex(x => x.id === editId)] = p; 
+            } else {
+                posts.push(p); 
+            }
+            
+            closeModal(); 
+            persist(); 
+            toast('Saved'); 
+        }
 
-        function toggle(id) { const el = document.getElementById(id); el.style.display = el.style.display === 'block' ? 'none' : 'block'; }
-        function closeModal() { document.querySelectorAll('.overlay').forEach(o => o.classList.remove('active')); }
-        function setView(v, btn) { document.querySelectorAll('.view-panel').forEach(el => el.classList.remove('active')); document.getElementById('view-'+v).classList.add('active'); document.querySelectorAll('.switch-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
-        function setFilter(c) { filter = c; render(); document.getElementById('clientPop').style.display = 'none'; }
-        function updateCount() { document.getElementById('charCount').textContent = document.getElementById('inpCaption').value.length + ' chars'; }
-        function moveMonth(n) { cDate.setMonth(cDate.getMonth()+n); render(); }
-        function resetMonth() { cDate = new Date(); render(); }
-        function esc(t) { return t ? t.replace(/</g, "&lt;") : ''; }
-        function formatDate(s) { return new Date(s).toLocaleDateString('en-US', {month:'short', day:'numeric'}); }
-        function toast(m) { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
-        function exportData() { const b = new Blob([JSON.stringify({posts,clients})],{type:'application/json'}); const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download='adscenes_backup.json'; a.click(); }
+        function delPost() { 
+            if (confirm('Delete?')) { 
+                posts = posts.filter(x => x.id !== editId); 
+                closeModal(); 
+                persist(); 
+                toast('Deleted'); 
+            } 
+        }
 
-        window.onclick = (e) => { if(!e.target.closest('.actions')) document.querySelectorAll('.popover').forEach(el => el.style.display = 'none'); };
+        function cycleStatus(e, id) { 
+            e.stopPropagation(); 
+            
+            const idx = posts.findIndex(p => p.id === id); 
+            const cycle = ['Draft', 'WIP', 'Ready', 'Posted', 'Draft']; 
+            const curr = cycle.indexOf(posts[idx].status || 'Draft'); 
+            
+            posts[idx].status = cycle[curr + 1]; 
+            persist(); 
+        }
+
+        // ==========================================
+        // UI HELPERS
+        // ==========================================
+        function toggle(id) { 
+            const el = document.getElementById(id); 
+            el.style.display = el.style.display === 'block' ? 'none' : 'block'; 
+        }
+
+        function closeModal() { 
+            document.querySelectorAll('.overlay').forEach(o => o.classList.remove('active')); 
+        }
+
+        function setView(viewName, btn) { 
+            document.querySelectorAll('.view-panel').forEach(el => el.classList.remove('active')); 
+            document.getElementById('view-' + viewName).classList.add('active'); 
+            
+            document.querySelectorAll('.switch-btn').forEach(b => b.classList.remove('active')); 
+            btn.classList.add('active'); 
+        }
+
+        function setFilter(clientName) { 
+            filter = clientName; 
+            render(); 
+            document.getElementById('clientPop').style.display = 'none'; 
+        }
+
+        function updateCount() { 
+            document.getElementById('charCount').textContent = document.getElementById('inpCaption').value.length + ' chars'; 
+        }
+
+        function moveMonth(n) { 
+            cDate.setMonth(cDate.getMonth() + n); 
+            render(); 
+        }
+
+        function resetMonth() { 
+            cDate = new Date(); 
+            render(); 
+        }
+
+        function esc(text) { 
+            return text ? text.replace(/</g, "&lt;") : ''; 
+        }
+
+        function formatDate(dateStr) { 
+            return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); 
+        }
+
+        function toast(message) { 
+            const t = document.getElementById('toast'); 
+            t.textContent = message; 
+            t.classList.add('show'); 
+            setTimeout(() => t.classList.remove('show'), 2000); 
+        }
+
+        // Global click to close popovers
+        window.onclick = (e) => { 
+            if (!e.target.closest('.actions')) {
+                document.querySelectorAll('.popover').forEach(el => el.style.display = 'none'); 
+            }
+        };
+
     </script>
 </body>
 </html>
