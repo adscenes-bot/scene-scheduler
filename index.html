@@ -117,13 +117,17 @@
         .cal-frame { background: white; border-radius: 20px; border: 1px solid var(--border); padding: 24px; box-shadow: var(--shadow-sm); }
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         .cal-title { font-size: 18px; font-weight: 700; }
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); width: 100%; border-top: 1px solid var(--border); border-left: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+        
+        /* THE FIX: minmax(0, 1fr) locks the grid structure and prevents blowout */
+        .cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); width: 100%; border-top: 1px solid var(--border); border-left: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
         .cal-head-cell { background: #F9FAFB; padding: 12px; text-align: center; font-size: 11px; font-weight: 700; color: var(--text-muted); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-        .cal-cell { background: white; min-height: 140px; padding: 10px; cursor: pointer; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); transition: background 0.1s; display: flex; flex-direction: column; }
+        
+        /* THE FIX: min-width: 0 allows the ellipsis to work inside a grid child */
+        .cal-cell { min-width: 0; background: white; min-height: 140px; padding: 10px; cursor: pointer; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); transition: background 0.1s; display: flex; flex-direction: column; }
         .cal-cell:hover { background: #F9FAFB; }
         .cal-num { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
         .cal-cell.today .cal-num { background: var(--text-main); color: white; }
-        .cal-event { background: var(--brand-subtle); color: var(--brand); padding: 3px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-left: 2px solid var(--brand); }
+        .cal-event { max-width: 100%; display: block; background: var(--brand-subtle); color: var(--brand); padding: 3px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-left: 2px solid var(--brand); }
 
         /* --- MODALS --- */
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(12px); z-index: 500; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
@@ -216,7 +220,7 @@
 
             <div id="view-list" class="view-panel active">
                 <table class="data-table">
-                    <thead><tr><th style="width: 45%;">Details</th><th style="width: 15%;">Status</th><th style="width: 15%;">Client</th><th style="width: 15%;">Asset</th><th style="width: 10%; text-align: right;">Date</th></tr></thead>
+                    <thead><tr><th style="width: 45%;">Details</th><th style="width: 15%;">Status</th><th style="width: 15%;">Client</th><th style="width: 15%;">Asset</th><th style="width: 10%; text-align: right;">Date & Time</th></tr></thead>
                     <tbody id="listBody"></tbody>
                 </table>
             </div>
@@ -242,14 +246,39 @@
                 <button class="modal-close" onclick="closeModal()"><svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
             </div>
             <div class="modal-body">
-                <div class="field"><label class="field-label">Campaign Title</label><input type="text" id="inpTitle" class="studio-input" placeholder="e.g. Summer Launch v2" autofocus></div>
-                <div class="field-row">
-                    <div class="field-col"><label class="field-label">Client</label><select id="inpClient" class="studio-input" style="-webkit-appearance:none; cursor:pointer; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%236B7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;"></select></div>
-                    <div class="field-col"><label class="field-label">Schedule Date</label><input type="date" id="inpDate" class="studio-input"></div>
+                <div class="field">
+                    <label class="field-label">Campaign Title</label>
+                    <input type="text" id="inpTitle" class="studio-input" placeholder="e.g. Summer Launch v2" autofocus>
                 </div>
-                <div class="field"><label class="field-label">Asset Link (Drive/Figma)</label><input type="url" id="inpLink" class="studio-input" placeholder="https://..."></div>
-                <div class="field"><div class="field-label"><span>Caption</span><span id="charCount" style="font-weight:400; color:var(--text-light);">0 chars</span></div><textarea id="inpCaption" class="studio-input" rows="4" style="resize:none; line-height:1.5;" placeholder="Write your post copy here..." oninput="updateCount()"></textarea></div>
-                <div class="field" style="margin-bottom:0;"><label class="field-label">Alt Text (Accessibility)</label><input type="text" id="inpAlt" class="studio-input" placeholder="Describe the image..."></div>
+                
+                <div class="field">
+                    <div class="field-label">
+                        <span>Caption</span>
+                        <span id="charCount" style="font-weight:400; color:var(--text-light);">0 chars</span>
+                    </div>
+                    <textarea id="inpCaption" class="studio-input" rows="4" style="resize:none; line-height:1.5;" placeholder="Write your post copy here..." oninput="updateCount()"></textarea>
+                </div>
+                
+                <div class="field">
+                    <label class="field-label">Alt Text (Accessibility)</label>
+                    <input type="text" id="inpAlt" class="studio-input" placeholder="Describe the image...">
+                </div>
+
+                <div class="field">
+                    <label class="field-label">Asset Link (Drive/Figma)</label>
+                    <input type="url" id="inpLink" class="studio-input" placeholder="https://...">
+                </div>
+
+                <div class="field-row" style="margin-bottom:0;">
+                    <div class="field-col">
+                        <label class="field-label">Client</label>
+                        <select id="inpClient" class="studio-input" style="-webkit-appearance:none; cursor:pointer; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%236B7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;"></select>
+                    </div>
+                    <div class="field-col">
+                        <label class="field-label">Schedule Date & Time</label>
+                        <input type="datetime-local" id="inpDate" class="studio-input">
+                    </div>
+                </div>
             </div>
             <div class="modal-foot">
                 <button class="btn btn-ghost" style="color:#EF4444;" id="btnDel" onclick="delPost()">Delete</button>
@@ -519,7 +548,10 @@
             const m = cDate.getMonth(); 
             const first = new Date(y, m, 1).getDay(); 
             const days = new Date(y, m + 1, 0).getDate(); 
-            const today = new Date().toISOString().split('T')[0];
+            
+            // Generate current date locally to compare against calendar cells
+            const tzOffset = (new Date()).getTimezoneOffset() * 60000;
+            const todayISO = (new Date(Date.now() - tzOffset)).toISOString().split('T')[0];
             
             let html = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d => `<div class="cal-head-cell">${d}</div>`).join('');
             
@@ -529,9 +561,10 @@
             
             for (let d = 1; d <= days; d++) { 
                 const iso = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`; 
-                const has = list.filter(p => p.date === iso); 
+                // Using startsWith allows it to match datetime strings like '2026-02-23T14:30'
+                const has = list.filter(p => p.date && p.date.startsWith(iso)); 
                 html += `
-                    <div class="cal-cell ${iso === today ? 'today' : ''}" onclick="openModal('${iso}')">
+                    <div class="cal-cell ${iso === todayISO ? 'today' : ''}" onclick="openModal('${iso}')">
                         <div class="cal-num">${d}</div>
                         ${has.map(p => `<div class="cal-event">${esc(p.title)}</div>`).join('')}
                     </div>
@@ -652,15 +685,12 @@
                     // STRICT APPEND: Posts
                     if (data.posts && Array.isArray(data.posts)) {
                         data.posts.forEach(newPost => {
-                            // Ensure a unique ID so existing posts aren't overwritten
                             if (!newPost.id) {
                                 newPost.id = 'post_' + Date.now() + Math.floor(Math.random() * 1000);
                             }
-                            // Enforce strict status
                             if (!newPost.status) {
                                 newPost.status = 'Draft';
                             }
-                            // Push to existing workspace
                             posts.push(newPost);
                         });
                     }
@@ -668,7 +698,6 @@
                     // STRICT MERGE: Clients
                     if (data.clients && Array.isArray(data.clients)) {
                         data.clients.forEach(newClient => {
-                            // Only add the client if they don't already exist
                             if (!clients.includes(newClient)) {
                                 clients.push(newClient);
                             }
@@ -699,14 +728,27 @@
         // ==========================================
         // POST EDITOR & ACTIONS
         // ==========================================
+        
+        // Helper to format proper local datetime strings for inputs
+        function getLocalIsoDatetime(dateObj) {
+            const tzOffset = dateObj.getTimezoneOffset() * 60000;
+            return (new Date(dateObj - tzOffset)).toISOString().slice(0, 16);
+        }
+
         function openModal(dateStr = null) { 
             editId = null; 
             
             document.getElementById('inpTitle').value = ''; 
-            document.getElementById('inpLink').value = ''; 
             document.getElementById('inpCaption').value = ''; 
             document.getElementById('inpAlt').value = ''; 
-            document.getElementById('inpDate').value = dateStr || new Date().toISOString().split('T')[0]; 
+            document.getElementById('inpLink').value = ''; 
+            
+            // Set default date, append T12:00 if clicked directly from a calendar cell (which only passes YYYY-MM-DD)
+            let defaultDate = getLocalIsoDatetime(new Date());
+            if (dateStr) {
+                defaultDate = dateStr + 'T12:00';
+            }
+            document.getElementById('inpDate').value = defaultDate; 
             
             const sel = document.getElementById('inpClient'); 
             sel.innerHTML = clients.map(c => `<option>${c}</option>`).join(''); 
@@ -727,10 +769,16 @@
             editId = id; 
             
             document.getElementById('inpTitle').value = p.title; 
-            document.getElementById('inpLink').value = p.link || ''; 
-            document.getElementById('inpCaption').value = p.caption; 
+            document.getElementById('inpCaption').value = p.caption || ''; 
             document.getElementById('inpAlt').value = p.alt || ''; 
-            document.getElementById('inpDate').value = p.date || ''; 
+            document.getElementById('inpLink').value = p.link || ''; 
+            
+            // Ensure old posts with only 'YYYY-MM-DD' don't break the new datetime-local input format
+            let dVal = p.date || '';
+            if (dVal && dVal.length === 10) {
+                dVal += 'T12:00';
+            }
+            document.getElementById('inpDate').value = dVal; 
             
             const sel = document.getElementById('inpClient'); 
             sel.innerHTML = clients.map(c => `<option>${c}</option>`).join(''); 
@@ -745,11 +793,11 @@
             const p = { 
                 id: editId || 'post_' + Date.now(), 
                 title: document.getElementById('inpTitle').value, 
-                client: document.getElementById('inpClient').value, 
-                date: document.getElementById('inpDate').value, 
-                link: document.getElementById('inpLink').value, 
                 caption: document.getElementById('inpCaption').value, 
                 alt: document.getElementById('inpAlt').value, 
+                link: document.getElementById('inpLink').value, 
+                client: document.getElementById('inpClient').value, 
+                date: document.getElementById('inpDate').value, 
                 status: editId ? posts.find(x => x.id === editId).status : 'Draft' 
             }; 
             
@@ -829,7 +877,14 @@
         }
 
         function formatDate(dateStr) { 
-            return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); 
+            if (!dateStr) return 'No Date';
+            const d = new Date(dateStr);
+            const options = { month: 'short', day: 'numeric' };
+            if (dateStr.includes('T')) {
+                options.hour = 'numeric';
+                options.minute = '2-digit';
+            }
+            return d.toLocaleDateString('en-US', options); 
         }
 
         function toast(message) { 
