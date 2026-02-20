@@ -10,14 +10,13 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 </head>
 <body>
-
     <div id="authOverlay">
         <div class="auth-box">
             <div class="auth-logo">adscenes <span>organiser</span></div>
             <input type="email" id="authEmail" class="auth-input" placeholder="Email">
             <input type="password" id="authPass" class="auth-input" placeholder="Password">
             <button class="auth-btn" onclick="handleAuth()">Enter System</button>
-            <div id="authError" style="color: #EF4444; display: none; margin-top:12px; text-align:center;"></div>
+            <div id="authError" style="color: #EF4444; display: none; margin-top: 12px; text-align: center;"></div>
         </div>
     </div>
 
@@ -35,31 +34,23 @@
     <main class="main-content">
         <div class="container">
             <div class="toolbar">
-                <div>
-                    <h1 class="page-title">Campaigns</h1>
-                    <div id="subtitle" style="color: var(--text-muted); font-size: 13px;">Syncing...</div>
-                </div>
+                <div><h1 class="page-title">Campaigns</h1><div id="subtitle" style="font-size:13px; color:var(--text-muted);">Syncing...</div></div>
                 <div class="view-switch">
                     <button class="switch-btn active" onclick="setView('list', this)">List</button>
                     <button class="switch-btn" onclick="setView('cal', this)">Calendar</button>
                 </div>
             </div>
-
             <div id="view-list" class="view-panel active">
                 <table class="data-table">
                     <thead><tr><th>Details</th><th>Status</th><th>Client</th><th>Asset</th><th style="text-align:right; cursor:pointer;" onclick="toggleSort()">Date ↑</th></tr></thead>
                     <tbody id="listBody"></tbody>
                 </table>
             </div>
-
             <div id="view-cal" class="view-panel">
                 <div class="cal-frame">
                     <div class="cal-header">
                         <h2 class="cal-title" id="calTitle">Month</h2>
-                        <div style="display:flex; gap:8px;">
-                            <button class="btn btn-ghost" onclick="moveMonth(-1)">Prev</button>
-                            <button class="btn btn-ghost" onclick="moveMonth(1)">Next</button>
-                        </div>
+                        <div style="display:flex; gap:8px;"><button class="btn btn-ghost" onclick="moveMonth(-1)">Prev</button><button class="btn btn-ghost" onclick="moveMonth(1)">Next</button></div>
                     </div>
                     <div class="cal-grid" id="calGrid"></div>
                 </div>
@@ -69,21 +60,13 @@
 
     <div class="overlay" id="editor">
         <div class="modal">
-            <div class="modal-header"><h3 id="modalTitle">Post Details</h3><button onclick="closeModal()" style="border:none; background:none; cursor:pointer;">✕</button></div>
+            <div class="modal-header"><h3>Post Details</h3><button onclick="closeModal()">✕</button></div>
             <div class="modal-body">
-                <input type="text" id="inpTitle" class="studio-input" placeholder="Post Title">
-                <select id="inpType" class="studio-input">
-                    <option value="Standard">Standard</option>
-                    <option value="Anchor">Anchor Post</option>
-                    <option value="Engagement">Engagement</option>
-                    <option value="Educational">Educational</option>
-                </select>
-                <textarea id="inpCaption" class="studio-input" rows="4" placeholder="Caption"></textarea>
-                <div style="display:flex; gap:10px;">
-                    <select id="inpClient" class="studio-input"></select>
-                    <input type="datetime-local" id="inpDate" class="studio-input">
-                </div>
-                <button class="btn btn-primary" style="width:100%;" onclick="saveData()">Save Changes</button>
+                <input type="text" id="inpTitle" class="studio-input" placeholder="Title">
+                <textarea id="inpCaption" class="studio-input" placeholder="Caption"></textarea>
+                <select id="inpClient" class="studio-input"></select>
+                <input type="datetime-local" id="inpDate" class="studio-input">
+                <button class="btn btn-primary" style="width:100%" onclick="saveData()">Save Changes</button>
             </div>
         </div>
     </div>
