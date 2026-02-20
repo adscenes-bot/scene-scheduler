@@ -1,4 +1,3 @@
-// js/firebase-config.js
 const firebaseConfig = {
     apiKey: "AIzaSyDvrE92N_kMbIA8gIO0a0dcYx7-ZUmr7mA",
     authDomain: "adscenes-content.firebaseapp.com",
