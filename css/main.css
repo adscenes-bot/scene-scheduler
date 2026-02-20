@@ -1,0 +1,37 @@
+/* css/main.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+
+:root {
+    --bg-body: #F3F4F6; --bg-surface: #FFFFFF; --text-main: #111827; --text-muted: #6B7280; --text-light: #9CA3AF;   
+    --brand: #2563EB; --brand-glow: rgba(37, 99, 235, 0.15); --brand-subtle: #EFF6FF; --border: #E5E7EB;
+    --s-draft-bg: #F3F4F6; --s-draft-fg: #6B7280; --s-wip-bg: #FFFBEB; --s-wip-fg: #D97706;
+    --s-ready-bg: #ECFDF5; --s-ready-fg: #059669; --s-posted-bg: #EFF6FF; --s-posted-fg: #2563EB;
+    --t-anchor-bg: #EDE9FE; --t-anchor-fg: #6D28D9; --t-anchor-bd: #C4B5FD;
+    --t-engage-bg: #FCE7F3; --t-engage-fg: #BE185D; --t-engage-bd: #F9A8D4;
+    --t-edu-bg: #EFF6FF; --t-edu-fg: #1D4ED8; --t-edu-bd: #93C5FD;
+    --t-promo-bg: #ECFDF5; --t-promo-fg: #047857; --t-promo-bd: #6EE7B7;
+    --t-std-bg: #F3F4F6; --t-std-fg: #4B5563; --t-std-bd: #D1D5DB;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-float: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+    --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-y: scroll; }
+.container { max-width: 1400px; margin: 0 auto; width: 100%; padding: 0 40px; }
+
+/* UI Component Styles */
+.header { height: 72px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 100; display: flex; align-items: center; }
+.logo { font-weight: 800; font-size: 20px; letter-spacing: -0.03em; color: var(--text-main); }
+.logo span { color: var(--text-muted); font-weight: 400; }
+
+/* Grid & Calendar */
+.cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); width: 100%; border-top: 1px solid var(--border); border-left: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.cal-cell { min-width: 0; background: white; min-height: 140px; padding: 10px; cursor: pointer; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.cal-event { padding: 4px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-left-width: 3px; border-left-style: solid; }
+
+/* Auth Overlay */
+#authOverlay { position: fixed; inset: 0; background: var(--bg-body); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+.auth-box { background: white; padding: 40px; border-radius: 24px; box-shadow: var(--shadow-modal); width: 400px; border: 1px solid var(--border); }
