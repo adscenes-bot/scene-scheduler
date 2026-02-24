@@ -435,11 +435,11 @@
                     posts = data.posts || [];
                     
                     // STRICT CLOUD SYNC: No more zombie merging. 
-                    // Use cloud clients. If cloud is totally empty, give default starters.
+                    // Use cloud clients. If cloud is totally empty, give your true defaults.
                     if (data.clients && data.clients.length > 0) {
                         clients = data.clients;
                     } else {
-                        clients = ['Agma Energy', 'ELURA', 'vigility tech'];
+                        clients = ['vigility tech', 'algaenergy'];
                     }
                     
                     render();
@@ -451,21 +451,6 @@
                 toast("Sync Error"); 
             });
         }
-
-        function persist() {
-            if (!currentUser) return;
-            
-            render(); 
-            
-            db.collection('users').doc(currentUser.uid).set({ 
-                posts: posts, 
-                clients: clients 
-            }).catch(e => { 
-                console.error("Save error:", e); 
-                toast("Failed to save"); 
-            });
-        }
-
         // ==========================================
         // COLOR & TAGGING SYSTEM
         // ==========================================
@@ -938,4 +923,5 @@
     </script>
 </body>
 </html>
+
 
