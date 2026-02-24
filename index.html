@@ -434,10 +434,13 @@
                     const data = doc.data();
                     posts = data.posts || [];
                     
-                    // Merge cloud clients with default ones to ensure nothing is lost
-                    const cloudClients = data.clients || [];
-                    const mergedClients = new Set([...clients, ...cloudClients]);
-                    clients = Array.from(mergedClients);
+                    // STRICT CLOUD SYNC: No more zombie merging. 
+                    // Use cloud clients. If cloud is totally empty, give default starters.
+                    if (data.clients && data.clients.length > 0) {
+                        clients = data.clients;
+                    } else {
+                        clients = ['Agma Energy', 'ELURA', 'vigility tech'];
+                    }
                     
                     render();
                 } else {
@@ -935,3 +938,4 @@
     </script>
 </body>
 </html>
+
